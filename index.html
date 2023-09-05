@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"/>
+    <script type="module" src="script.js"></script>
+    <title>Suggestor</title>
+</head>
+<header>
+    AI Picture Promt Suggestor
+</header>
+<body>
+<div class="inputContainer">
+    <div class="dropdownContainer">
+        <div>
+            <label for="media">Media</label>
+        </div>
+        <select class="input" type="text" id="media">
+            <option value="none">none</option>
+        </select>
+    </div>
+    
+    <div class="dropdownContainer">
+        <div>
+            <label for="adjective">Adjective</label>
+        </div>
+        <select class="input" type="text" id="adjective">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="subject">Subject</label>
+        </div>
+        <select class="input" type="text" id="subject">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="looksLike">Looks Like</label>
+        </div>
+        <select class="input" type="text" id="looksLike">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="clothing">Clothing</label>
+        </div>
+        <select class="input" type="text" id="clothing">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="action">Action</label>
+        </div>
+        <select class="input" type="text" id="action">
+            <option value="none">none</option>
+        </select>
+    </div>
+    
+    <div class="dropdownContainer">
+        <div>
+            <label for="scene">Scene</label>
+        </div>
+        <select class="input" type="text" id="scene">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="details">Details</label>
+        </div>
+        <select class="input" type="text" id="details">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="composition">Composition</label>
+        </div>
+        <select class="input" type="text" id="composition">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
+            <label for="artistStyle">Artist Style</label>
+        </div>
+        <select class="input" type="text" id="artistStyle">
+            <option value="none">none</option>
+        </select>
+    </div>
+</div>
+
+<div>
+    <div id="recommendationSentence"></div>
+
+</div>
+
+</body>
+</html>

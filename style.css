@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    padding: 0;
+    color: #F7CCAC
+}
+body{
+    background-color: #3A3845;
+}
+header{
+    text-align: center;
+    font-weight: 600;
+    font-size: 50px;
+    padding-block: 25px
+}
+.dropdownContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.inputContainer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.input{
+    width: 75px;
+    background-color: #826F66;
+}
+#recommendationSentence{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 40px;
+    padding-block: 50px
+}
+.word{
+    border-bottom: solid 1px #F7CCAC;
+}
+.wordContainer{
+    margin-inline: 20px;
+}
+.wordLabel{
+    font-size: 17.5px;
+}
