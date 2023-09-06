@@ -17,16 +17,22 @@ header{
     justify-content: center;
     flex-direction: column;
     align-items: center;
+
 }
 .inputContainer{
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+    width: 85%;
+    margin: auto;
 }
 
-.input{
-    width: 75px;
+.dropdown{
+    max-width: 75px;
+    min-width: 75px;
     /* background-color: #826F66; */
     background-color: #675D50;
+    border: 1px inset black;
 }
 #recommendationSentence{
     display: flex;
@@ -69,4 +75,15 @@ header{
     font-size: 25px;
     letter-spacing: 1px;
     border: inset 1px black;
+}
+.enableButton{
+    width: 75px;
+    font-size: 12px;
+    padding: 4px;
+    background-color: #52493d;
+    border: 1px inset black;
+}
+.enableButtonPressed{
+    background-color: #ABC4AA;
+    color: #3A3845;
 }

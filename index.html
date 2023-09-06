@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css"/>
+    <script type="module" src="data.js"></script>
     <script type="module" src="script.js"></script>
     <title>Suggestor</title>
 </head>
@@ -11,7 +12,23 @@
     AI Picture Promt Suggestor
 </header>
 <body>
-<div class="inputContainer">
+<!-- <div class="inputContainer">
+    <div class="dropdownContainer">
+        <div>
+            <label for="shotType">Shot Type</label>
+        </div>
+        <select class="input" type="text" id="shotType">
+            <option value="none">none</option>
+        </select>
+    </div>
+    <div class="dropdownContainer">
+        <div>
+            <label for="shotStyle">Shot Style</label>
+        </div>
+        <select class="input" type="text" id="shotStyle">
+            <option value="none">none</option>
+        </select>
+    </div>
     <div class="dropdownContainer">
         <div>
             <label for="media">Media</label>
@@ -77,6 +94,15 @@
 
     <div class="dropdownContainer">
         <div>
+            <label for="lighting">Lighting</label>
+        </div>
+        <select class="input" type="text" id="lighting">
+            <option value="none">none</option>
+        </select>
+    </div>
+
+    <div class="dropdownContainer">
+        <div>
             <label for="details">Details</label>
         </div>
         <select class="input" type="text" id="details">
@@ -101,7 +127,7 @@
             <option value="none">none</option>
         </select>
     </div>
-</div>
+</div> -->
 
 <div>
     <div id="recommendationSentence"></div>
@@ -109,7 +135,7 @@
 </div>
 
 <div id="adjustmentListContainer">
-    
+
 </div>
 
 </body>
