@@ -87,3 +87,11 @@ header{
     background-color: #ABC4AA;
     color: #3A3845;
 }
+.copyIconContainer{
+    width: 85%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-size: 25px;
+}

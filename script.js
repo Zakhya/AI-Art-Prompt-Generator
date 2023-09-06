@@ -1,7 +1,7 @@
 import { data } from "./data.js"
 let recomendationSentence = document.getElementById('recommendationSentence')
 let adjustmentListContainer = document.getElementById('adjustmentListContainer')
-
+const shuffleButton = document.querySelector('.fa-shuffle')
 const updateFinalSentence = function(){
     recomendationSentence.innerHTML = ''
     Object.keys(currentRecomendationObject).forEach(key => {
@@ -17,7 +17,7 @@ const updateFinalSentence = function(){
         container.appendChild(word)
         container.appendChild(label)
         recomendationSentence.appendChild(container)
-        
+        console.log(recomendationSentence)
     })
 }
 const updateAdjustmentList = function(){
@@ -25,11 +25,44 @@ const updateAdjustmentList = function(){
     Object.keys(currentRecomendationObject).forEach(key => {
         inputList.forEach(a => {
             if(a.id === `${[key]}AdjustmentInput`){  
-                    a.value = `${currentRecomendationObject[key][key]}`
+                a.value = `${currentRecomendationObject[key][key]}`
             }
         })
     })
 }
+shuffleButton.addEventListener('click', e => {
+    Object.keys(currentRecomendationObject).forEach(key => {
+        const length = data[key].length
+        const randomInx = Math.floor(Math.random() * length)
+        const randomVal = data[key][randomInx]
+        currentRecomendationObject[key][key] = randomVal
+        currentRecomendationObject[key].enabled = true
+
+    })
+    updateFinalSentence()
+    updateAdjustmentList()
+    console.log(currentRecomendationObject)
+})
+document.addEventListener('DOMContentLoaded', (event) => { // for navigator 
+    const copyButton = document.querySelector('.fa-copy')
+    copyButton.addEventListener('click', e => {
+        const wordList = recomendationSentence.querySelectorAll('p.word')
+        console.log("wordList:", wordList)
+        let sentenceArray = []
+        Object.keys(currentRecomendationObject).forEach(key => {
+            if(currentRecomendationObject[key][key] !== '' && currentRecomendationObject[key][key] !== 'none' ){
+                sentenceArray.push(currentRecomendationObject[key][key])
+            }
+        })
+        navigator.clipboard.writeText(sentenceArray.join(' '))
+        .then(function() {
+            console.log('Text successfully copied to clipboard!');
+        }).catch(function(err) {
+            console.error('Unable to copy text to clipboard:', err);
+        });
+        console.log(sentenceArray)
+    })                                                
+});
 
 let currentRecomendationObject = {
 
