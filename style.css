@@ -25,10 +25,12 @@ header{
 
 .input{
     width: 75px;
-    background-color: #826F66;
+    /* background-color: #826F66; */
+    background-color: #675D50;
 }
 #recommendationSentence{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     text-align: center;
     font-size: 40px;
@@ -38,8 +40,33 @@ header{
     border-bottom: solid 1px #F7CCAC;
 }
 .wordContainer{
-    margin-inline: 20px;
+    margin: 20px;
 }
 .wordLabel{
     font-size: 17.5px;
+}
+#adjustmentListContainer{
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+    margin: auto;
+    background-color: #675D50;
+}
+.adjustmentListItemContainer{
+    display: flex;
+    justify-content: space-between;
+}
+.adjustmentInput{
+    width: 85%;
+    height: 35px;
+    background-color: #826F66;
+}
+.adjustmentInputLabel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    font-size: 25px;
+    letter-spacing: 1px;
+    border: inset 1px black;
 }
