@@ -31,12 +31,16 @@ const updateAdjustmentList = function(){
     })
 }
 shuffleButton.addEventListener('click', e => {
-    Object.keys(currentRecomendationObject).forEach(key => {
+    const buttonList = adjustmentListContainer.querySelectorAll('button.enableButton')
+    console.log(buttonList)
+    Object.keys(currentRecomendationObject).forEach((key, i )=> {
         const length = data[key].length
         const randomInx = Math.floor(Math.random() * length)
         const randomVal = data[key][randomInx]
         currentRecomendationObject[key][key] = randomVal
         currentRecomendationObject[key].enabled = true
+        buttonList[i].textContent = 'disable'
+        buttonList[i].setAttribute('class', 'enableButton enableButtonPressed')
 
     })
     updateFinalSentence()
@@ -70,8 +74,8 @@ let currentRecomendationObject = {
     shotStyle: {shotStyle: '', enabled: false},
     media: {media: '', enabled: false},
     adjective: {adjective: '', enabled: false},
+    emotionAdjective: {emotionAdjective: '', enabled: false},
     subject: {subject: '', enabled: false},
-    looksLike: {looksLike: '', enabled: false},
     clothing: {clothing: '', enabled: false},
     action: {action: '', enabled: false},
     scene: {scene: '', enabled: false},
@@ -155,21 +159,42 @@ Object.keys(data).forEach(key => {
     itemContainer.appendChild(dropdown)
     itemContainer.appendChild(itemInput)
     adjustmentListContainer.appendChild(itemContainer)
-    
+    console.log(data)
     let fisrtItem = true 
+    if(key === 'clothing'){
+        for (let key in data.clothing) {
+            for (let subKey in data.clothing[key]){
+
+                const option = document.createElement('option');
+                if(fisrtItem === true){
+                    const firstOption = document.createElement('option');
+                    firstOption.value = 'none'
+                    firstOption.textContent = 'none';
+                    fisrtItem = false
+                    dropdown.appendChild(firstOption);
+                }
+                option.value = data.clothing[key][subKey];
+                option.textContent = data.clothing[key][subKey];
+                
+                dropdown.appendChild(option);
+            }
+        }
+        return
+    }
     data[key].forEach(item => {
         // populate dropdowns
+        
         const option = document.createElement('option');
         if(fisrtItem === true){
             const firstOption = document.createElement('option');
             firstOption.value = 'none'
             firstOption.textContent = 'none';
-            fisrtItem = false
-            dropdown.appendChild(firstOption);
-        }
-            option.value = item;
-            option.textContent = item;
-
-        dropdown.appendChild(option);
+        fisrtItem = false
+        dropdown.appendChild(firstOption);
+    }
+    option.value = item;
+    option.textContent = item;
+    
+    dropdown.appendChild(option);
     });
 });
