@@ -81,7 +81,6 @@ let currentRecomendationObject = {
     scene: {scene: '', enabled: false},
     lighting: {lighting: '', enabled: false},
     details: {details: '', enabled: false},
-    composition: {composition: '', enabled: false},
     artistStyle: {artistStyle: '', enabled: false}
 }
 
