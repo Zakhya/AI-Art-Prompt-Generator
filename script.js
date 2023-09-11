@@ -7,6 +7,43 @@ let iconShuffleContainer = document.querySelector('.iconShuffleContainer')
 const shuffleButton = document.querySelector('.fullSentenceShuffle')
 let detailsButtonClickableIcons = false
 
+let unlockIconList = document.querySelectorAll('.fa-lock-open')
+let lockIconList = document.querySelectorAll('.fa-lock')
+console.log(lockIconList)
+unlockIconList.forEach((e, i) => {
+    e.addEventListener('click', (subE) => {
+    if(subE.target.classList.contains('clickable')){
+        lockIconList[i].classList.add('clickable')
+        lockIconList[i].style.opacity = '1.0'
+        lockIconList[i].style.pointerEvents = 'auto'
+        lockIconList[i].classList.add('buttonPressedTextColor')
+        subE.target.style.opacity = '0.0'
+        subE.target.style.pointerEvents = 'none'
+        subE.target.classList.remove('clickable')
+        console.log('lock Clicked')
+        subE.stopPropagation()
+    } else {
+        console.log('Click propagated')
+        subE.target.parentElement.parentElement.classList.add('topRandomButtonPressed');
+    } 
+})
+})
+lockIconList.forEach((e, i) => {
+    e.addEventListener('click', subE => {
+        if(subE.target.classList.contains('clickable')){
+            unlockIconList[i].classList.add('clickable')
+            unlockIconList[i].style.opacity = '1.0'
+            unlockIconList[i].style.pointerEvents = 'auto'
+            subE.target.style.opacity = '0.0'
+            subE.target.style.pointerEvents = 'none'
+        console.log('lock Clicked')
+        subE.stopPropagation()
+        } else {
+            console.log('Click propagated')
+            subE.target.parentElement.parentElement.classList.add('topRandomButtonPressed');
+        } 
+    })
+})
 iconPlusContainer.addEventListener('mouseenter', e => {
     if(!detailsButtonClickableIcons) return 
     const icon = e.target.querySelector('i')
@@ -21,7 +58,8 @@ iconPlusContainer.addEventListener('mouseleave', e => {
 })
 
 iconPlusContainer.addEventListener('click', e => {
-    if(!detailsButtonClickableIcons) return 
+    if(!detailsButtonClickableIcons) return
+    console.log('lock Clicked') 
     e.stopPropagation()
     const icon = e.target.querySelector('i')
 })
@@ -60,9 +98,17 @@ const updateAdjustmentList = function(){
 const shuffleSelectedValues = function(){
     const bottomButtonList = adjustmentListContainer.querySelectorAll('button.enableButton')
     const topButtonList = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
-    console.log(topButtonList)
     Object.keys(currentRecomendationObject).forEach((key, i )=> {
         if(currentRecomendationObject[key].enabled === false) return
+        let lockIcon = topButtonList[i].querySelector('.fa-lock')
+        console.log(lockIcon)
+        if(lockIcon.style.pointerEvents === 'auto') return
+
+        let unlockIcon = topButtonList[i].querySelector('.fa-lock-open')
+        unlockIcon.style.opacity = '1.0';
+        unlockIcon.style.pointerEvents = 'auto';
+        unlockIcon.classList.add('buttonPressedTextColor')
+        unlockIcon.classList.add('clickable')
         const length = data[key].length
         const randomInx = Math.floor(Math.random() * length)
         const randomVal = data[key][randomInx]
@@ -72,7 +118,6 @@ const shuffleSelectedValues = function(){
         bottomButtonList[i].setAttribute('class', 'enableButton enableButtonPressed')
         if(topButtonList[i].id !== 'details'){
             topButtonList[i].classList.add('topRandomButtonPressed')
-            console.log('not details ran')
         } else {
             let plusIcon = topButtonList[i].querySelector('.fa-plus')
             plusIcon.classList.add('buttonPressedTextColor')
@@ -109,6 +154,7 @@ let currentRecomendationObject = {
 let topButtons = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
 topButtons.forEach((e, i) => {
     e.addEventListener('click', (a, i) => {
+        if(a.target.classList.contains('detailsIcon')) return
         let id = a.currentTarget.id
         console.log(id)
         if(currentRecomendationObject[id]){
@@ -122,7 +168,6 @@ topButtons.forEach((e, i) => {
                     }
                 })
                 if(id === 'details'){
-                    console.log('running')
                     const detailsButton = document.getElementById('details');
                     let plusIcon = detailsButton.querySelector('.fa-plus')
                     let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
@@ -135,12 +180,28 @@ topButtons.forEach((e, i) => {
                     detailsButtonClickableIcons = true
                     a.currentTarget.classList.add('topRandomButtonPressed')
                 }
+                
                 e.setAttribute('class', 'topRandomButton topRandomButtonPressed')
+                let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
+                unlockIcon.style.opacity = '1.0';
+                unlockIcon.style.pointerEvents = 'auto';
+                unlockIcon.classList.add('buttonPressedTextColor')
+                unlockIcon.classList.add('clickable')
                 const length = data[id].length
                 const randomInx = Math.floor(Math.random() * length)
                 const randomVal = data[id][randomInx]
                 currentRecomendationObject[id][id] = randomVal
             } else {
+                let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
+                let lockIcon = a.currentTarget.querySelector('.fa-lock')
+                unlockIcon.style.opacity = '0';
+                unlockIcon.style.pointerEvents = 'none';
+                unlockIcon.classList.remove('buttonPressedTextColor')
+                unlockIcon.classList.remove('clickable')
+                lockIcon.classList.remove('clickable')
+                lockIcon.style.opacity = '0';
+                lockIcon.style.pointerEvents = 'none';
+                lockIcon.classList.remove('buttonPressedTextColor')
                 e.setAttribute('class', 'topRandomButton')
                 bottomButtonList.forEach(subE => {
                     if(subE.id === id + 'EnableButton'){

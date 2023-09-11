@@ -50,13 +50,11 @@ header{
     background-color: #52493d;
     border: 1px solid black;
     padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.topRandomButtonDetails{
-    width: 15vw;
-    background-color: #52493d;
-    border: 1px solid black;
 
-}
 .topRandomButtonPressed{
     background-color: #ABC4AA;
     color: #3A3845;
