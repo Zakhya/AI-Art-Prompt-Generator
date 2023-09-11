@@ -1,7 +1,14 @@
 *{
     margin: 0;
     padding: 0;
+    color: #F7CCAC;
+}
+.buttonPressedTextColor{
+    color: #3A3845
+}
+button{
     color: #F7CCAC
+    
 }
 body{
     background-color: #3A3845;
@@ -19,14 +26,41 @@ header{
     align-items: center;
 
 }
-.inputContainer{
+.topButtonContainer{
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     justify-content: space-between;
     width: 85%;
     margin: auto;
 }
+.inputContainerRow{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 10px;
+    color: #F7CCAC;
 
+}
+.topButtonPadding{
+    padding: 5px 10px;
+}
+.topRandomButton{
+    width: 15vw;
+    background-color: #52493d;
+    border: 1px solid black;
+    padding: 5px 10px;
+}
+.topRandomButtonDetails{
+    width: 15vw;
+    background-color: #52493d;
+    border: 1px solid black;
+
+}
+.topRandomButtonPressed{
+    background-color: #ABC4AA;
+    color: #3A3845;
+}
 .dropdown{
     max-width: 75px;
     min-width: 75px;
@@ -42,6 +76,13 @@ header{
     font-size: 40px;
     padding-block: 50px
 }
+
+#details{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
 .word{
     border-bottom: solid 1px #F7CCAC;
 }
@@ -94,4 +135,34 @@ header{
     justify-content: space-between;
     padding: 20px;
     font-size: 25px;
+}
+.iconPlusContainer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.iconPlusContainer:hover{
+    color: #F7CCAC;
+}
+.iconRandomContainer:hover{
+    color: #F7CCAC;
+}
+.iconShuffleContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+i{
+    color: inherit;
+}
+.detailsIcon:hover{
+    color: #F7CCAC;
+}
+.detailsIcon{
+    opacity: 0.0;
+    pointer-events: none;
 }

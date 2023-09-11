@@ -73,7 +73,7 @@ export const data = {
         'drab', 'dull', 'worn-out', 'sallow', 'pale', 'unattractive', 'horrible', 
         'grungy', 'shabby', 'rugged', 'scruffy', 'unkempt', 'disgusting', 'whorish'],
 
-    emotionAdjective: [
+    emotion: [
         'joyful', 'melancholy', 'euphoric', 'haunting', 'serene','frustrated', 'elated', 'lonely', 'triumphant', 'desolate',
         'passionate', 'anxious', 'hopeful', 'foreboding', 'nostalgic','ecstatic', 'apprehensive', 'contemplative', 'jubilant', 'mournful',
         'bewildered', 'invigorated', 'yearning', 'sorrowful', 'radiant','tormented', 'blissful', 'restless', 'enchanted', 'horrified',
@@ -1035,7 +1035,8 @@ export const data = {
         "in the style of Fall In Love by Phantogram", "in the style of Cirrus by Bonobo", 
         "in the style of Color Of My Soul by Pretty Lights", "in the style of Winter by OVERWORK", 
         "in the style of Repetition by Max Cooper", "in the style of Pareidolia by Agnosticon", 
-        "in the style of Order From Chaos by Max Cooper"
-
+        "in the style of Order From Chaos by Max Cooper", "in the style of Follow The Fool by Primus",
+        'in the style of Deathbound by Mastadon', 'in the style of BOB (Bombs Over Bangdad',
+        'in the style of Cycles to Gehenna by Aesop Rock'
 ]
 }

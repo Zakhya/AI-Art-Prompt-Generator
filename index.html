@@ -13,129 +13,52 @@
     AI Picture Promt Suggestor
 </header>
 <body>
-<!-- <div class="inputContainer">
-    <div class="dropdownContainer">
-        <div>
-            <label for="shotType">Shot Type</label>
-        </div>
-        <select class="input" type="text" id="shotType">
-            <option value="none">none</option>
-        </select>
-    </div>
-    <div class="dropdownContainer">
-        <div>
-            <label for="shotStyle">Shot Style</label>
-        </div>
-        <select class="input" type="text" id="shotStyle">
-            <option value="none">none</option>
-        </select>
-    </div>
-    <div class="dropdownContainer">
-        <div>
-            <label for="media">Media</label>
-        </div>
-        <select class="input" type="text" id="media">
-            <option value="none">none</option>
-        </select>
-    </div>
+<div class="topButtonContainer">
+    <div class="inputContainerRow">
+        <button class="topRandomButton" id="shotType">Shot Type</button>
     
-    <div class="dropdownContainer">
-        <div>
-            <label for="adjective">Adjective</label>
-        </div>
-        <select class="input" type="text" id="adjective">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="subject">Subject</label>
-        </div>
-        <select class="input" type="text" id="subject">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="looksLike">Looks Like</label>
-        </div>
-        <select class="input" type="text" id="looksLike">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="clothing">Clothing</label>
-        </div>
-        <select class="input" type="text" id="clothing">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="action">Action</label>
-        </div>
-        <select class="input" type="text" id="action">
-            <option value="none">none</option>
-        </select>
-    </div>
+        <button class="topRandomButton" id="shotStyle">Shot Style</button>
     
-    <div class="dropdownContainer">
-        <div>
-            <label for="scene">Scene</label>
-        </div>
-        <select class="input" type="text" id="scene">
-            <option value="none">none</option>
-        </select>
+        <button class="topRandomButton" id="media">Media</button>
+        
+        <button class="topRandomButton" id="adjective">Adjective</button>
+    </div>
+    <div class="inputContainerRow">
+        <button class="topRandomButton" id="emotionAdjective">Emotion</button>
+    
+        <button class="topRandomButton" id="subject">Subject</button>
+    
+        <button class="topRandomButton" id="clothing">Clothing</button>
+    
+        <button class="topRandomButton" id="action">Action</button>
+
+    </div>
+    <div class="inputContainerRow">
+        <button class="topRandomButton" id="scene">Scene</button>
+    
+        <button class="topRandomButton" id="lighting">Lighting</button>
+    
+        <button class="topRandomButtonDetails" id="details">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-plus fa-shake detailsIcon"></i>
+            </div>
+                Details
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-shuffle detailsIcon"></i>
+            </div>
+        </button>
+    
+        <button class="topRandomButton" id="artist">Artist</button>
     </div>
 
-    <div class="dropdownContainer">
-        <div>
-            <label for="lighting">Lighting</label>
-        </div>
-        <select class="input" type="text" id="lighting">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="details">Details</label>
-        </div>
-        <select class="input" type="text" id="details">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="composition">Composition</label>
-        </div>
-        <select class="input" type="text" id="composition">
-            <option value="none">none</option>
-        </select>
-    </div>
-
-    <div class="dropdownContainer">
-        <div>
-            <label for="artistStyle">Artist Style</label>
-        </div>
-        <select class="input" type="text" id="artistStyle">
-            <option value="none">none</option>
-        </select>
-    </div>
-</div> -->
+</div>
 
 <div>
     <div id="recommendationSentence"></div>
 
 </div>
 <div class="copyIconContainer">
-    <i class="fa-solid fa-shuffle"></i>
+    <i class="fa-solid fa-shuffle fullSentenceShuffle"></i>
     <i class="fa-solid fa-copy"></i>
 </div>
 
