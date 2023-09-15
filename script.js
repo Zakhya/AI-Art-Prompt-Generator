@@ -1,15 +1,22 @@
 import { data } from "./data.js"
+import { addPlusAndShuffletoDetailsButton } from "./functions.js"
 let recomendationSentence = document.getElementById('recommendationSentence')
 let adjustmentListContainer = document.getElementById('adjustmentListContainer')
 let topButtonContainer = document.querySelector('.topButtonContainer')
 let iconPlusContainer = document.querySelector('.iconPlusContainer')
 let iconShuffleContainer = document.querySelector('.iconShuffleContainer')
 const shuffleButton = document.querySelector('.fullSentenceShuffle')
+const adjustmentInputContainer = document.querySelector('#adjustmentListContainer')
+
 let detailsButtonClickableIcons = false
 
 let unlockIconList = document.querySelectorAll('.fa-lock-open')
 let lockIconList = document.querySelectorAll('.fa-lock')
-console.log(lockIconList)
+
+function getRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
 unlockIconList.forEach((e, i) => {
     e.addEventListener('click', (subE) => {
     if(subE.target.classList.contains('clickable')){
@@ -71,66 +78,236 @@ iconShuffleContainer.addEventListener('click', e => {
 const updateFinalSentence = function(){
     recomendationSentence.innerHTML = ''
     Object.keys(currentRecomendationObject).forEach(key => {
-        if(currentRecomendationObject[key][key] === '' || currentRecomendationObject[key][key] === [] || currentRecomendationObject[key].enabled === false) return
+        if(currentRecomendationObject[key][key] === '' || currentRecomendationObject[key][key] === [] 
+        || currentRecomendationObject[key].enabled === false) return
+
         let container = document.createElement('div')
         container.setAttribute('class', 'wordContainer')
         let label = document.createElement('p')
         label.setAttribute('class', 'wordLabel')
         let word = document.createElement('p')
         word.setAttribute('class', 'word')
-        word.textContent = currentRecomendationObject[key][key]
-        label.textContent = key
-        container.appendChild(word)
-        container.appendChild(label)
-        recomendationSentence.appendChild(container)
+        if(currentRecomendationObject[key].value === undefined){
+            Object.keys(currentRecomendationObject[key]).forEach(subKey => {
+                if(subKey === 'value' || subKey === 'enabled') return
+                if(currentRecomendationObject[key][subKey].value === '' || currentRecomendationObject[key][subKey].value === [] 
+        || currentRecomendationObject[key][subKey].enabled === false) return
+                if(subKey === 'enabled')return
+                    let container = document.createElement('div')
+                    container.setAttribute('class', 'wordContainer')
+                    let label = document.createElement('p')
+                    label.setAttribute('class', 'wordLabel')
+                    let word = document.createElement('p')
+                    word.setAttribute('class', 'word')
+                    word.textContent = currentRecomendationObject[key][subKey].value
+                    label.textContent = subKey
+                    container.appendChild(word)
+                    container.appendChild(label)
+                    recomendationSentence.appendChild(container)
+                })
+            } else {
+            word.textContent = currentRecomendationObject[key].value
+            label.textContent = key
+            container.appendChild(word)
+            container.appendChild(label)
+            recomendationSentence.appendChild(container)
+        }
     })
 }
-const updateAdjustmentList = function(){
-    let inputList = adjustmentListContainer.querySelectorAll('input.adjustmentInput')
+
+const updateAdjustmentList = function() {
+    let inputList = adjustmentListContainer.querySelectorAll('input.adjustmentInput');
+    let bottomButtonList = adjustmentListContainer.querySelectorAll('button.enableButton')
     Object.keys(currentRecomendationObject).forEach(key => {
-        inputList.forEach(a => {
-            if(a.id === `${[key]}AdjustmentInput`){  
-                a.value = `${currentRecomendationObject[key][key]}`
+        const item = currentRecomendationObject[key];
+
+        // If the item is an object and has a value property (like shotType, shotStyle, etc.)
+        if (key !== 'clothing') {
+            const targetInput = adjustmentListContainer.querySelector(`input#${key}AdjustmentInput`);
+            if (targetInput) {
+                targetInput.value = item.value || ''; // Set the value or default to an empty string
             }
-        })
-    })
+        } else {  // If it's an object without a value property (like clothing)
+            let clothingCombinedValue = "";
+            Object.keys(item).forEach(subKey => {
+                if (item[subKey] !== 'enabled' && item[subKey] !== 'disabled' && item[subKey] !== 'value' && item[subKey] !== undefined && typeof item[subKey] !== 'boolean') {  // To avoid the 'enabled' property in clothing
+                    const subItem = item[subKey];
+                    if(currentRecomendationObject[key][subKey].enabled === true){
+                        let targetButton = adjustmentListContainer.querySelector(`button#${subKey}EnableButton`)
+                        const targetInput = adjustmentListContainer.querySelector(`input#${subKey}AdjustmentInput`);
+                        targetInput.value = currentRecomendationObject[key][subKey].value
+                        targetButton.textContent = 'disable'
+                        targetButton.setAttribute('class', 'enableButton enableButtonPressed')
+                    } else {
+                        let targetButton = adjustmentListContainer.querySelector(`button#${subKey}EnableButton`)
+                        const targetInput = adjustmentListContainer.querySelector(`input#${subKey}AdjustmentInput`);
+                        targetInput.value = currentRecomendationObject[key][subKey].value
+                        targetButton.textContent = 'enable'
+                        targetButton.setAttribute('class', 'enableButton')
+                        
+                    }
+
+                    // Combine the values for clothing
+                    clothingCombinedValue += subItem.value;
+                }
+            });
+
+            // Assuming the combined clothing input has an ID of 'clothingAdjustmentInput'
+            const clothingInput = adjustmentListContainer.querySelector(`input#clothingAdjustmentInput`);
+            if (clothingInput) {
+                clothingInput.value = clothingCombinedValue;
+            }
+        }
+    });
 }
+
+
+
+
+
+
 const shuffleSelectedValues = function(){
+    console.log(currentRecomendationObject)
     const bottomButtonList = adjustmentListContainer.querySelectorAll('button.enableButton')
     const topButtonList = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
     Object.keys(currentRecomendationObject).forEach((key, i )=> {
-        if(currentRecomendationObject[key].enabled === false) return
-        let lockIcon = topButtonList[i].querySelector('.fa-lock')
-        console.log(lockIcon)
-        if(lockIcon.style.pointerEvents === 'auto') return
+        const topBotton = topButtonContainer.querySelector(`#${key}`)
+        const bottomBotton = adjustmentListContainer.querySelector(`#${key}EnableButton`)
+        const item = currentRecomendationObject[key]
+        if(!item.enabled) return
 
-        let unlockIcon = topButtonList[i].querySelector('.fa-lock-open')
-        unlockIcon.style.opacity = '1.0';
-        unlockIcon.style.pointerEvents = 'auto';
-        unlockIcon.classList.add('buttonPressedTextColor')
-        unlockIcon.classList.add('clickable')
-        const length = data[key].length
-        const randomInx = Math.floor(Math.random() * length)
-        const randomVal = data[key][randomInx]
-        currentRecomendationObject[key][key] = randomVal
-        currentRecomendationObject[key].enabled = true
-        bottomButtonList[i].textContent = 'disable'
-        bottomButtonList[i].setAttribute('class', 'enableButton enableButtonPressed')
-        if(topButtonList[i].id !== 'details'){
-            topButtonList[i].classList.add('topRandomButtonPressed')
-        } else {
-            let plusIcon = topButtonList[i].querySelector('.fa-plus')
+            if (key === 'clothing') {
+                let firstValue = true;
+                Object.keys(item).forEach(subKey => {
+                    i++
+                    if(item[subKey] === true || item[subKey] === undefined) return
+                    if(item[subKey].enabled){
+                        const button = document.querySelector(`#${subKey}`)
+                        let lockIcon = button.querySelector('.fa-lock')
+                        if(lockIcon.style.pointerEvents === 'auto') return
+                        
+                        let unlockIcon = button.querySelector('.fa-lock-open')
+                        unlockIcon.style.opacity = '1.0';
+                        unlockIcon.style.pointerEvents = 'auto';
+                        unlockIcon.classList.add('buttonPressedTextColor')
+                        unlockIcon.classList.add('clickable')
+                        
+                        button.classList.add('topRandomButtonPressed')
+                    
+                        const length = data[key][subKey].length;
+                        const randomInx = Math.floor(Math.random() * length);
+                        const randomVal = data[key][subKey][randomInx];
+                        if (subKey === 'head') {
+                            item[subKey].value = `wearing a ${randomVal},`;
+                            firstValue = false;
+                        } else if (subKey === 'arms') {
+                            item[subKey].value = ` and ${randomVal}`;
+                        } else if (subKey === 'legs') {
+                            item[subKey].value = ` ${randomVal},`;
+                        } else if(subKey === 'body'){
+                            item[subKey].value = ` ${randomVal},`;
+                        } else if(subKey === 'outfit'){
+                            item[subKey].value = ` in a ${randomVal}`
+                        }
+                    }
+            });
+            currentRecomendationObject[key].enabled = true
+           
+
+            let lockIcon = topBotton.querySelector('.fa-lock')
+            if(lockIcon.style.pointerEvents === 'auto') return
+            
+            let unlockIcon = topBotton.querySelector('.fa-lock-open')
+            unlockIcon.style.opacity = '1.0';
+            unlockIcon.style.pointerEvents = 'auto';
+            unlockIcon.classList.add('buttonPressedTextColor')
+            unlockIcon.classList.add('clickable')
+            if(topBotton.id !== 'details'){
+                topBotton.classList.add('topRandomButtonPressed')
+            } else {
+            let plusIcon = topBotton.querySelector('.fa-plus')
             plusIcon.classList.add('buttonPressedTextColor')
-            let randomIcon = topButtonList[i].querySelector('.fa-shuffle')
+            let randomIcon = topBotton.querySelector('.fa-shuffle')
             randomIcon.classList.add('buttonPressedTextColor')
-            topButtonList[i].setAttribute('class', 'topRandomButtonDetails topRandomButtonPressed')
-
+            // topButtonList[i].setAttribute('class', 'topRandomButtonDetails topRandomButtonPressed')
+            
         }
+            if(key === "artistStyle"){
+                const artistStyleCategories = Object.keys(data.artistStyle);
+                const randomCategory = getRandomElement(artistStyleCategories);
+                
+                const categoryValues = data.artistStyle[randomCategory];
+                const randomValue = getRandomElement(categoryValues);
+                currentRecomendationObject[key].value = randomValue
+                bottomBotton.textContent = 'disable'
+                bottomBotton.setAttribute('class', 'enableButton enableButtonPressed')
+
+            } else {
+                const length = data[key].length
+                const randomInx = Math.floor(Math.random() * length)
+                const randomVal = data[key][randomInx]
+                currentRecomendationObject[key].value = randomVal
+                currentRecomendationObject[key].enabled = true
+                console.log(bottomBotton)
+                console.log(key)
+                bottomBotton.textContent = 'disable'
+                bottomBotton.setAttribute('class', 'enableButton enableButtonPressed')
+            }
+        } else {
+            let lockIcon = topBotton.querySelector('.fa-lock')
+            if(lockIcon.style.pointerEvents === 'auto') return
+            
+            let unlockIcon = topBotton.querySelector('.fa-lock-open')
+            unlockIcon.style.opacity = '1.0';
+            unlockIcon.style.pointerEvents = 'auto';
+            unlockIcon.classList.add('buttonPressedTextColor')
+            unlockIcon.classList.add('clickable')
+            if(topBotton.id !== 'details'){
+                topBotton.classList.add('topRandomButtonPressed')
+            } else {
+            let plusIcon = topBotton.querySelector('.fa-plus')
+            plusIcon.classList.add('buttonPressedTextColor')
+            let randomIcon = topBotton.querySelector('.fa-shuffle')
+            randomIcon.classList.add('buttonPressedTextColor')
+            topBotton.setAttribute('class', 'topRandomButtonDetails topRandomButtonPressed')
+            
+        }
+            if(key === "artistStyle"){
+                console.log(currentRecomendationObject)
+                const artistStyleCategories = Object.keys(data.artistStyle);
+                const randomCategory = getRandomElement(artistStyleCategories);
+                
+                const categoryValues = data.artistStyle[randomCategory];
+                const randomValue = getRandomElement(categoryValues);
+                currentRecomendationObject[key].value = randomValue
+                bottomButtonList.forEach(button => {
+                    if(button.id === `${key}EnableButton`){
+                        button.textContent = 'disable'
+                        button.setAttribute('class', 'enableButton enableButtonPressed')
+                    }
+                })
+
+            } else {
+                const length = data[key].length
+                const randomInx = Math.floor(Math.random() * length)
+                const randomVal = data[key][randomInx]
+                currentRecomendationObject[key].value = randomVal
+                currentRecomendationObject[key].enabled = true
+                bottomButtonList.forEach(button => {
+                    if(button.id === `${key}EnableButton`){
+                        button.textContent = 'disable'
+                        button.setAttribute('class', 'enableButton enableButtonPressed')
+
+                    }
+                })
+            }
+    }
         
     })
+    console.log(currentRecomendationObject)
     updateFinalSentence()
     updateAdjustmentList()
-    console.log(currentRecomendationObject)
+
 }
 shuffleButton.addEventListener('click', e => {
     shuffleSelectedValues()
@@ -138,26 +315,78 @@ shuffleButton.addEventListener('click', e => {
 })
 let currentRecomendationObject = {
 
-    shotType: {shotType: '', enabled: false},
-    shotStyle: {shotStyle: '', enabled: false},
-    media: {media: '', enabled: true},
-    adjective: {adjective: '', enabled: true},
-    emotion: {emotion: '', enabled: false},
-    subject: {subject: '', enabled: true},
-    clothing: {clothing: '', enabled: false},
-    action: {action: '', enabled: true},
-    scene: {scene: '', enabled: true},
-    lighting: {lighting: '', enabled: false},
-    details: {details: [], enabled: false},
-    artistStyle: {artistStyle: '', enabled: true}
+    shotType: {value: '', enabled: false},
+    shotStyle: {value: '', enabled: false},
+    media: {value: '', enabled: true},
+    adjective: {value: '', enabled: true},
+    emotion: {value: '', enabled: false},
+    subject: {value: '', enabled: true},
+    clothing: {
+        head: {value: '', enabled: true},
+        body: {value: '', enabled: true},
+        legs: {value: '', enabled: true},
+        arms: {value: '', enabled: true},
+        outfit: {value: '', enabled: true},
+        enabled: true,
+        value: ''},
+    action: {value: '', enabled: true},
+    scene: {value: '', enabled: true},
+    lighting: {value: '', enabled: false},
+    details: {value: '', enabled: false},
+    artistStyle: {value: '', enabled: true}
 }
 let topButtons = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
 topButtons.forEach((e, i) => {
     e.addEventListener('click', (a, i) => {
+
         if(a.target.classList.contains('detailsIcon')) return
         let id = a.currentTarget.id
-        console.log(id)
-        if(currentRecomendationObject[id]){
+        console.log('id:', id)
+        if(id === 'head' || id === 'arms' || id === 'body' || id === 'legs' || id === 'outfits'){
+            currentRecomendationObject['clothing'][id].enabled = !currentRecomendationObject['clothing'][id].enabled
+            let bottomButtonList = adjustmentListContainer.querySelectorAll('button.enableButton')
+            if(currentRecomendationObject['clothing'][id].enabled === true){
+                console.log("enabled = true:", 'ran')
+                bottomButtonList.forEach(subE => {
+                    if(subE.id === id + 'EnableButton'){
+                        subE.textContent = 'disable'
+                        subE.setAttribute('class', 'enableButton enableButtonPressed')
+                        console.log('enabled hed,body,kelegs,arms')
+                    }
+                })
+
+                e.setAttribute('class', 'topRandomButton topRandomButtonPressed')
+                let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
+                unlockIcon.style.opacity = '1.0';
+                unlockIcon.style.pointerEvents = 'auto';
+                unlockIcon.classList.add('buttonPressedTextColor')
+                unlockIcon.classList.add('clickable')
+                const length = data['clothing'][id].length
+                const randomInx = Math.floor(Math.random() * length)
+                const randomVal = data['clothing'][id][randomInx]
+                currentRecomendationObject['clothing'][id].value = randomVal
+            } else {
+                let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
+                let lockIcon = a.currentTarget.querySelector('.fa-lock')
+                unlockIcon.style.opacity = '0';
+                unlockIcon.style.pointerEvents = 'none';
+                unlockIcon.classList.remove('buttonPressedTextColor')
+                unlockIcon.classList.remove('clickable')
+                lockIcon.classList.remove('clickable')
+                lockIcon.style.opacity = '0';
+                lockIcon.style.pointerEvents = 'none';
+                lockIcon.classList.remove('buttonPressedTextColor')
+                e.setAttribute('class', 'topRandomButton')
+                bottomButtonList.forEach(subE => {
+                    if(subE.id === id + 'EnableButton'){
+                        subE.textContent = 'enable'
+                        subE.setAttribute('class', 'enableButton')
+                    }
+                })
+            }     
+        } else {
+            console.log('curr[id]:', currentRecomendationObject[id])
+            if(currentRecomendationObject[id]){
             let bottomButtonList = adjustmentListContainer.querySelectorAll('button.enableButton')
             currentRecomendationObject[id].enabled = !currentRecomendationObject[id].enabled
             if(currentRecomendationObject[id].enabled === true){
@@ -166,19 +395,10 @@ topButtons.forEach((e, i) => {
                         subE.textContent = 'disable'
                         subE.setAttribute('class', 'enableButton enableButtonPressed')
                     }
+                    
                 })
                 if(id === 'details'){
-                    const detailsButton = document.getElementById('details');
-                    let plusIcon = detailsButton.querySelector('.fa-plus')
-                    let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
-                    plusIcon.style.opacity = '1.0';
-                    shuffleIcon.style.opacity = '1.0';
-                    plusIcon.style.pointerEvents = 'auto';
-                    shuffleIcon.style.pointerEvents = 'auto';
-                    shuffleIcon.classList.add('buttonPressedTextColor')
-                    plusIcon.classList.add('buttonPressedTextColor')
-                    detailsButtonClickableIcons = true
-                    a.currentTarget.classList.add('topRandomButtonPressed')
+                    addPlusAndShuffletoDetailsButton(a.currentTarget)           
                 }
                 
                 e.setAttribute('class', 'topRandomButton topRandomButtonPressed')
@@ -190,7 +410,8 @@ topButtons.forEach((e, i) => {
                 const length = data[id].length
                 const randomInx = Math.floor(Math.random() * length)
                 const randomVal = data[id][randomInx]
-                currentRecomendationObject[id][id] = randomVal
+                currentRecomendationObject[id].value = randomVal
+                console.log(currentRecomendationObject)
             } else {
                 let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
                 let lockIcon = a.currentTarget.querySelector('.fa-lock')
@@ -223,6 +444,8 @@ topButtons.forEach((e, i) => {
                 }
             }
         }
+    }
+    console.log(currentRecomendationObject)
         updateFinalSentence()
         updateAdjustmentList()
     })
@@ -248,60 +471,84 @@ document.addEventListener('DOMContentLoaded', (event) => { // for navigator
     })                                                
 });
 
-
+const createUI = () => {
 Object.keys(data).forEach((key, i) => {
+    const value = data[key]
     const topButtonList = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
     // const dropdown = document.getElementById(`${key}`);
-    let enableButton = document.createElement('button')
-    enableButton.setAttribute('class','enableButton')
-    enableButton.setAttribute('id',`${[key]}EnableButton`)
-    enableButton.textContent = 'enable'
-    enableButton.isPressed = false
-    enableButton.addEventListener('click', e => {
-    if(e.target.textContent === 'enable'){
-        console.log(topButtonList[i])
-        topButtonList[i].setAttribute('class', 'topRandomButton topRandomButtonPressed')
-        const detailsButton = document.getElementById('details');
-        let plusIcon = detailsButton.querySelector('.fa-plus')
-        let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
-        plusIcon.style.opacity = '1.0';
-        shuffleIcon.style.opacity = '1.0';
-        plusIcon.style.pointerEvents = 'auto';
-        shuffleIcon.style.pointerEvents = 'auto';
-        shuffleIcon.classList.add('buttonPressedTextColor')
-        plusIcon.classList.add('buttonPressedTextColor')
-        e.target.textContent = 'disable'
-        e.target.setAttribute('class', 'enableButton enableButtonPressed')
-        currentRecomendationObject[key].enabled = true
-        updateFinalSentence()
-        updateAdjustmentList()
-    }else if(e.target.textContent === 'disable'){
-        console.log(topButtonList[i])
-        topButtonList[i].setAttribute('class', 'topRandomButton')
-        const detailsButton = document.getElementById('details');
-        let plusIcon = detailsButton.querySelector('.fa-plus')
-        let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
-        plusIcon.style.opacity = '0.0';
-        shuffleIcon.style.opacity = '0.0';
-        plusIcon.style.pointerEvents = 'none';
-        shuffleIcon.style.pointerEvents = 'none';
-        detailsButtonClickableIcons = false
-        e.target.textContent = 'enable'
-        e.target.setAttribute('class', 'enableButton')
-        currentRecomendationObject[key].enabled = false
-        updateFinalSentence()
-        updateAdjustmentList()
-            
-        }
+    if(!Array.isArray(data[key])){
+        console.log('value',value)
+        //handle first element
+        let enableButton = document.createElement('button')
+        enableButton.setAttribute('class','enableButton')
+        enableButton.setAttribute('id',`${key}EnableButton`)
+        enableButton.textContent = 'enable'
+        enableButton.isPressed = false
+        enableButton.addEventListener('click', e => {
+        if(e.target.textContent === 'enable'){
+            topButtonList.forEach(buttonEl => {
+                if(buttonEl.id === enableButton.id){
+                    console.log('buttonEl Changed')
+                }
+            })
+            console.log(topButtonList[i])
+            topButtonList[i].setAttribute('class', 'topRandomButton topRandomButtonPressed')
+            const detailsButton = document.getElementById('details');
+            let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
+                unlockIcon.style.opacity = '1.0';
+                unlockIcon.style.pointerEvents = 'auto';
+                unlockIcon.classList.add('buttonPressedTextColor')
+                unlockIcon.classList.add('clickable')
+            let plusIcon = detailsButton.querySelector('.fa-plus')
+            let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+            plusIcon.style.opacity = '1.0';
+            shuffleIcon.style.opacity = '1.0';
+            plusIcon.style.pointerEvents = 'auto';
+            shuffleIcon.style.pointerEvents = 'auto';
+            shuffleIcon.classList.add('buttonPressedTextColor')
+            plusIcon.classList.add('buttonPressedTextColor')
+            e.target.textContent = 'disable'
+            e.target.setAttribute('class', 'enableButton enableButtonPressed')
+            currentRecomendationObject[key].enabled = true
+            updateFinalSentence()
+            updateAdjustmentList()
+       }else if(e.target.textContent === 'disable'){
+            console.log(topButtonList[i])
+            topButtonList[i].setAttribute('class', 'topRandomButton')
+            const detailsButton = document.getElementById('details');
+            let unlockIcon = a.currentTarget.querySelector('.fa-lock-open')
+                unlockIcon.style.opacity = '0';
+                unlockIcon.style.pointerEvents = 'none';
+                unlockIcon.classList.remove('buttonPressedTextColor')
+                unlockIcon.classList.remove('clickable')
+            let plusIcon = detailsButton.querySelector('.fa-plus')
+            let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+            plusIcon.style.opacity = '0.0';
+            shuffleIcon.style.opacity = '0.0';
+            plusIcon.style.pointerEvents = 'none';
+            shuffleIcon.style.pointerEvents = 'none';
+            detailsButtonClickableIcons = false
+            e.target.textContent = 'enable'
+            e.target.setAttribute('class', 'enableButton')
+            currentRecomendationObject[key].enabled = false
+            updateFinalSentence()
+            updateAdjustmentList()
+         }
     })
     // enableButton.setAttribute('class', 'enableButton')
     const dropdown = document.createElement('select')
     dropdown.setAttribute('class', 'dropdown')
     dropdown.addEventListener('change', e => {
         if(e.target.value === 'none'){
-            currentRecomendationObject[key][key] = ''
-            
+            Object.keys(currentRecomendationObject[key]).forEach(subKey => {
+                currentRecomendationObject[key][subKey].value = ''
+            })
         } else {
+            if(typeof value === 'object'){
+                console.log('isObject', 'true')
+            }
+            console.log('isObject', 'false')
+            
             currentRecomendationObject[key][key] = e.target.value
             currentRecomendationObject[key].enabled = true
             enableButton.textContent = 'disable'
@@ -316,72 +563,359 @@ Object.keys(data).forEach((key, i) => {
     // create adjustment list
     const itemContainer = document.createElement('div')
     itemContainer.setAttribute('class', 'adjustmentListItemContainer')
-    let itemlabel = document.createElement('label') 
-    itemlabel.setAttribute('for', `${[key]}AdjustmentInput`)
+        const itemContainerDiv = document.createElement('div')
+        itemContainerDiv.classList.add('itemContainerDiv')
+        const itemDetailsFilter = document.createElement('div')
+        const p = document.createElement('p')
+        p.textContent = 'something to see'
+        let itemLabelDiv = document.createElement('div')
+        itemLabelDiv.setAttribute('class', 'adjustmentInputLabelContainer')
+        let itemlabel = document.createElement('p') 
+        itemlabel.setAttribute('for', `${key}AdjustmentInput`)
+        itemlabel.setAttribute('class', `adjustmentInputLabel`)
+        itemlabel.textContent = key
+        itemLabelDiv.appendChild(itemlabel)
+        
+        let itemInput = document.createElement('input')
+        itemInput.setAttribute('id', `${key}AdjustmentInput`)
+        itemInput.setAttribute('class', `adjustmentInput`)
+        itemInput.setAttribute('type', 'text')
+        
+        itemInput.addEventListener('input', e => {
+            if(e.target.value  === ''){
+                currentRecomendationObject[key].value = ''
+                dropdown.value = 'none'
+                enableButton.textContent = 'enable'
+                enableButton.setAttribute('class', 'enableButton')
+                currentRecomendationObject[key].enabled = false
+            } else {
+                currentRecomendationObject[key] = e.target.value
+            }
+            updateFinalSentence()
+            updateAdjustmentList()
+            
+        })
+        
+        itemContainerDiv.appendChild(enableButton)
+        itemContainerDiv.appendChild(itemLabelDiv)
+        itemContainerDiv.appendChild(dropdown)
+        itemContainerDiv.appendChild(itemInput)
+        itemContainer.appendChild(itemContainerDiv)
+        itemDetailsFilter.appendChild(p)
+        itemContainer.appendChild(itemDetailsFilter)
+
+
+        adjustmentListContainer.appendChild(itemContainer)
+        let fisrtItem = true 
+        
+        if(fisrtItem === true){
+        const firstOption = document.createElement('option');
+        firstOption.value = 'none'
+        firstOption.textContent = 'none';
+        fisrtItem = false
+        dropdown.appendChild(firstOption);
+    }
+
+    if(Array.isArray(value)){
+        value.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item;
+            option.textContent = item;
+            dropdown.appendChild(option);
+        });
+    } else {
+        Object.values(value).forEach(subValue => {
+            subValue.forEach(e => {
+                const option = document.createElement('option');
+                option.value = e;
+                option.textContent = e;
+                dropdown.appendChild(option);
+            })
+        })
+    }
+
+        Object.keys(data[key]).forEach(subKey => {
+            let enableButton = document.createElement('button')
+            enableButton.setAttribute('class','enableButton')
+            enableButton.setAttribute('id',`${subKey}EnableButton`)
+            enableButton.textContent = 'enable'
+            enableButton.isPressed = false
+            enableButton.addEventListener('click', e => {
+            if(e.target.textContent === 'enable'){
+                let button = adjustmentInputContainer.querySelector(`#${subKey}EnableButton`)
+                    if(button.id === enableButton.id){
+                        let topButton = topButtonContainer.querySelector(`#${key}`)
+                        topButton.setAttribute('class', 'topRandomButton topRandomButtonPressed')
+                        console.log(e.target)
+                        const detailsButton = document.getElementById('details');
+                        let plusIcon = detailsButton.querySelector('.fa-plus')
+                        let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+                        plusIcon.style.opacity = '1.0';
+                        shuffleIcon.style.opacity = '1.0';
+                        plusIcon.style.pointerEvents = 'auto';
+                        shuffleIcon.style.pointerEvents = 'auto';
+                        shuffleIcon.classList.add('buttonPressedTextColor')
+                        plusIcon.classList.add('buttonPressedTextColor')
+                        // e.target.textContent = 'disable'
+                        // e.target.setAttribute('class', 'enableButton enableButtonPressed')
+                        // currentRecomendationObject[key][subKey].enabled = true
+                        updateFinalSentence()
+                        updateAdjustmentList()
+                    }
+                
+            }else if(e.target.textContent === 'disable'){
+                console.log(adjustmentInputContainer)
+                let button = adjustmentInputContainer.querySelector(`#${subKey}EnableButton`)
+                    if(button.id === enableButton.id){
+                        let topButton = topButtonContainer.querySelector(`#${key}`)
+                        topButton.setAttribute('class', 'topRandomButton')
+                        console.log(button)
+                        
+                        const detailsButton = document.getElementById('details');
+                        let plusIcon = detailsButton.querySelector('.fa-plus')
+                        let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+                        plusIcon.style.opacity = '0.0';
+                        shuffleIcon.style.opacity = '0.0';
+                        plusIcon.style.pointerEvents = 'none';
+                        shuffleIcon.style.pointerEvents = 'none';
+                        detailsButtonClickableIcons = false
+                        e.target.textContent = 'enable'
+                        e.target.setAttribute('class', 'enableButton')
+                        currentRecomendationObject[key][subKey].enabled = false
+                        console.log(currentRecomendationObject[key][subKey])
+                        updateFinalSentence()
+                        updateAdjustmentList()
+                    }
+                }
+            })
+            // enableButton.setAttribute('class', 'enableButton')
+            const dropdown = document.createElement('select')
+            dropdown.setAttribute('class', 'dropdown')
+            dropdown.addEventListener('change', e => {
+                if(e.target.value === 'none'){
+                    currentRecomendationObject[key][subKey].value = ''
+                } else {
+                    if(typeof value === 'object'){
+                        console.log('isObject', 'true')
+                    }
+                    currentRecomendationObject[key][subKey].value = e.target.value
+                    currentRecomendationObject[key][subKey].enabled = true
+                    enableButton.textContent = 'disable'
+                    enableButton.setAttribute('class', 'enableButton enableButtonPressed')
+                }
+                console.log(currentRecomendationObject)
+                updateFinalSentence()
+                updateAdjustmentList()
+            })
+            // create adjustment list
+            const itemContainer = document.createElement('div')
+            itemContainer.setAttribute('class', 'adjustmentListItemContainer')
+            const itemContainerDiv = document.createElement('div')
+            itemContainerDiv.classList.add('itemContainerDiv')
+            const itemDetailsFilter = document.createElement('div')
+            const p = document.createElement('p')
+            p.textContent = 'something to see'
+            let itemLabelDiv = document.createElement('div')
+            itemLabelDiv.setAttribute('class', 'adjustmentInputLabelContainer')
+            let itemlabel = document.createElement('p') 
+            itemlabel.setAttribute('for', `${subKey}AdjustmentInput`)
+            itemlabel.setAttribute('class', `adjustmentInputLabel`)
+            itemlabel.textContent = subKey
+            itemLabelDiv.appendChild(itemlabel)
+        
+            let itemInput = document.createElement('input')
+            itemInput.setAttribute('id', `${subKey}AdjustmentInput`)
+            itemInput.setAttribute('class', `adjustmentInput`)
+            itemInput.setAttribute('type', 'text')
+            
+            itemInput.addEventListener('input', e => {
+                if(e.target.value  === ''){
+                    currentRecomendationObject[key][subKey].value = ''
+                    dropdown.value = 'none'
+                    enableButton.textContent = 'enable'
+                    enableButton.setAttribute('class', 'enableButton')
+                    currentRecomendationObject[subKey].enabled = false
+                } else {
+                    currentRecomendationObject[key][subKey].value = e.target.value
+                }
+                updateFinalSentence()
+                updateAdjustmentList()
+
+            })
+
+            itemContainerDiv.appendChild(enableButton)
+            itemContainerDiv.appendChild(itemLabelDiv)
+            itemContainerDiv.appendChild(dropdown)
+            itemContainerDiv.appendChild(itemInput)
+            itemContainer.appendChild(itemContainerDiv)
+            itemDetailsFilter.appendChild(p)
+            itemContainer.appendChild(itemDetailsFilter)
+
+
+            adjustmentListContainer.appendChild(itemContainer)
+            let fisrtItem = true 
+
+            if(fisrtItem === true){
+            const firstOption = document.createElement('option');
+            firstOption.value = 'none'
+            firstOption.textContent = 'none';
+            fisrtItem = false
+            dropdown.appendChild(firstOption);
+            }
+        })
+
+        
+    } else{
+
+        let enableButton = document.createElement('button')
+        enableButton.setAttribute('class','enableButton')
+        enableButton.setAttribute('id',`${key}EnableButton`)
+        enableButton.textContent = 'enable'
+        enableButton.isPressed = false
+        enableButton.addEventListener('click', e => {
+        if(e.target.textContent === 'enable'){
+            let topButton = topButtonContainer.querySelector(`#${key}`)
+            topButton.setAttribute('class', 'topRandomButton topRandomButtonPressed')
+            let unlockIcon = topButton.querySelector('.fa-lock-open')
+            unlockIcon.style.opacity = '1.0';
+            unlockIcon.style.pointerEvents = 'auto';
+            unlockIcon.classList.add('buttonPressedTextColor')
+            unlockIcon.classList.add('clickable')
+            const detailsButton = document.getElementById('details');
+            let plusIcon = detailsButton.querySelector('.fa-plus')
+            let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+            plusIcon.style.opacity = '1.0';
+            shuffleIcon.style.opacity = '1.0';
+            plusIcon.style.pointerEvents = 'auto';
+            shuffleIcon.style.pointerEvents = 'auto';
+            shuffleIcon.classList.add('buttonPressedTextColor')
+            plusIcon.classList.add('buttonPressedTextColor')
+            e.target.textContent = 'disable'
+            e.target.setAttribute('class', 'enableButton enableButtonPressed')
+            currentRecomendationObject[key].enabled = true
+            updateFinalSentence()
+            updateAdjustmentList()
+    }else if(e.target.textContent === 'disable'){
+        let topButton = topButtonContainer.querySelector(`#${key}`)
+        topButton.setAttribute('class', 'topRandomButton')
+        let unlockIcon = topButton.querySelector('.fa-lock-open')
+                unlockIcon.style.opacity = '0';
+                unlockIcon.style.pointerEvents = 'none';
+                unlockIcon.classList.remove('buttonPressedTextColor')
+                unlockIcon.classList.remove('clickable')
+        const detailsButton = document.getElementById('details');
+        let plusIcon = detailsButton.querySelector('.fa-plus')
+        let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+        plusIcon.style.opacity = '0.0';
+        shuffleIcon.style.opacity = '0.0';
+        plusIcon.style.pointerEvents = 'none';
+        shuffleIcon.style.pointerEvents = 'none';
+        detailsButtonClickableIcons = false
+        e.target.textContent = 'enable'
+        e.target.setAttribute('class', 'enableButton')
+        currentRecomendationObject[key].enabled = false
+        updateFinalSentence()
+        updateAdjustmentList()
+        
+    }
+})
+// enableButton.setAttribute('class', 'enableButton')
+const dropdown = document.createElement('select')
+dropdown.setAttribute('class', 'dropdown')
+dropdown.addEventListener('change', e => {
+    if(e.target.value === 'none'){
+        currentRecomendationObject[key][key] = ''
+    } else {
+        if(typeof value === 'object'){
+            console.log('isObject', 'true')
+        }
+        
+        currentRecomendationObject[key][key] = e.target.value
+        currentRecomendationObject[key].enabled = true
+        enableButton.textContent = 'disable'
+        enableButton.setAttribute('class', 'enableButton enableButtonPressed')
+        
+        
+    }
+    console.log(currentRecomendationObject)
+    updateFinalSentence()
+    updateAdjustmentList()
+})
+// create adjustment list
+const itemContainer = document.createElement('div')
+itemContainer.setAttribute('class', 'adjustmentListItemContainer')
+    const itemContainerDiv = document.createElement('div')
+    itemContainerDiv.classList.add('itemContainerDiv')
+    const itemDetailsFilter = document.createElement('div')
+    const p = document.createElement('p')
+    p.textContent = 'something to see'
+    let itemLabelDiv = document.createElement('div')
+    itemLabelDiv.setAttribute('class', 'adjustmentInputLabelContainer')
+    let itemlabel = document.createElement('p') 
+    itemlabel.setAttribute('for', `${key}AdjustmentInput`)
     itemlabel.setAttribute('class', `adjustmentInputLabel`)
     itemlabel.textContent = key
+    itemLabelDiv.appendChild(itemlabel)
     
     let itemInput = document.createElement('input')
-    itemInput.setAttribute('id', `${[key]}AdjustmentInput`)
+    itemInput.setAttribute('id', `${key}AdjustmentInput`)
     itemInput.setAttribute('class', `adjustmentInput`)
     itemInput.setAttribute('type', 'text')
     
     itemInput.addEventListener('input', e => {
         if(e.target.value  === ''){
-            currentRecomendationObject[key][key] = ''
+            currentRecomendationObject[key].value = ''
             dropdown.value = 'none'
             enableButton.textContent = 'enable'
             enableButton.setAttribute('class', 'enableButton')
             currentRecomendationObject[key].enabled = false
         } else {
-            currentRecomendationObject[key][key] = e.target.value
+            currentRecomendationObject[key].value = e.target.value
         }
         updateFinalSentence()
         updateAdjustmentList()
-
+        
     })
     
-    itemContainer.appendChild(enableButton)
-    itemContainer.appendChild(itemlabel)
-    itemContainer.appendChild(dropdown)
-    itemContainer.appendChild(itemInput)
+    itemContainerDiv.appendChild(enableButton)
+    itemContainerDiv.appendChild(itemLabelDiv)
+    itemContainerDiv.appendChild(dropdown)
+    itemContainerDiv.appendChild(itemInput)
+    itemContainer.appendChild(itemContainerDiv)
+    itemDetailsFilter.appendChild(p)
+    itemContainer.appendChild(itemDetailsFilter)
+
+
     adjustmentListContainer.appendChild(itemContainer)
     let fisrtItem = true 
-    if(key === 'clothing'){
-        for (let key in data.clothing) {
-            for (let subKey in data.clothing[key]){
-
-                const option = document.createElement('option');
-                if(fisrtItem === true){
-                    const firstOption = document.createElement('option');
-                    firstOption.value = 'none'
-                    firstOption.textContent = 'none';
-                    fisrtItem = false
-                    dropdown.appendChild(firstOption);
-                }
-                option.value = data.clothing[key][subKey];
-                option.textContent = data.clothing[key][subKey];
-                
-                dropdown.appendChild(option);
-            }
-        }
-        return
-    }
-    data[key].forEach(item => {
-        // populate dropdowns
-        
-        const option = document.createElement('option');
-        if(fisrtItem === true){
-            const firstOption = document.createElement('option');
-            firstOption.value = 'none'
-            firstOption.textContent = 'none';
-        fisrtItem = false
-        dropdown.appendChild(firstOption);
-    }
-    option.value = item;
-    option.textContent = item;
     
-    dropdown.appendChild(option);
+    if(fisrtItem === true){
+    const firstOption = document.createElement('option');
+    firstOption.value = 'none'
+    firstOption.textContent = 'none';
+    fisrtItem = false
+    dropdown.appendChild(firstOption);
+}
+
+if(Array.isArray(value)){
+    value.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        dropdown.appendChild(option);
     });
+} else {
+    Object.values(value).forEach(subValue => {
+        subValue.forEach(e => {
+            const option = document.createElement('option');
+            option.value = e;
+            option.textContent = e;
+            dropdown.appendChild(option);
+        })
+    })
+}
+}
 });
+}
+createUI()
 shuffleSelectedValues()

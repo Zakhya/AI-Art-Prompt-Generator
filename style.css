@@ -32,6 +32,7 @@ header{
     flex-direction: column;
     justify-content: space-between;
     width: 85%;
+    min-width: 600px;
     margin: auto;
 }
 .inputContainerRow{
@@ -93,12 +94,14 @@ header{
 #adjustmentListContainer{
     display: flex;
     flex-direction: column;
+    min-width: 600px;
     width: 85%;
     margin: auto;
     background-color: #675D50;
 }
 .adjustmentListItemContainer{
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 .adjustmentInput{
@@ -106,28 +109,30 @@ header{
     height: 35px;
     background-color: #826F66;
 }
-.adjustmentInputLabel{
+.adjustmentInputLabelContainer{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20%;
+    width: 35%;
     font-size: 25px;
     letter-spacing: 1px;
     border: inset 1px black;
 }
 .enableButton{
-    width: 75px;
+    min-width: 75px;
     font-size: 12px;
     padding: 4px;
     background-color: #52493d;
     border: 1px inset black;
 }
 .enableButtonPressed{
+    min-width: 75px;
     background-color: #ABC4AA;
     color: #3A3845;
 }
 .copyIconContainer{
     width: 85%;
+    min-width: 600px;
     margin: auto;
     display: flex;
     justify-content: space-between;
@@ -163,4 +168,8 @@ i{
 .detailsIcon{
     opacity: 0.0;
     pointer-events: none;
+}
+.itemContainerDiv{
+    display: flex;
+    width: 100%;
 }

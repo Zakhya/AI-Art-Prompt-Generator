@@ -1,0 +1,83 @@
+export const data = {
+    shotType: [
+        'close-up', "Environmental portrait", "Rule of thirds composition", "Flat lay composition", "Abstract imagery",
+    ],
+
+    shotStyle: [
+        'polaroid', "Digital manipulation", "Bokeh blur", "Posterized effect", "Lomography", "Backlit", "Chiaroscuro lighting",
+    ],
+
+    media:[
+        'Photo of a', 'Picture of a', "Collage", "Mirror reflection of a", 'portrait of a', "Watercolor of a", 
+    ],
+
+    adjective:[    
+        'colorful', 'shadowy', 'vintage', 'blurry', 'bright', 'dim', 'neon', 'shiny', 'faded', 'sharp', 'vibrant', 'splattered', 'warped', 'glowing', 'retro',
+    ],
+
+    emotion: [
+        'joyful', 'melancholy', 'euphoric', 'haunting', 'serene','frustrated', 'elated', 'lonely', 'triumphant', 'desolate',
+    ],
+
+    subject: [
+        'man', 'woman', 'bird', 'dog', 'child', 'elder', 'cat', 'fish', 'lighthouse',
+    ],
+
+    clothing: {
+        head:[
+            // 0 - 1000 AD    
+            'wearing a pileus', 'wearing a petasos', 'wearing a leather cap', 'wearing a hooded cloak',
+        ],
+    
+        body:[
+            // 0 - 1000 AD    
+            'wearing a sakkos', 'wearing a tunic', 'wearing a toga','wearing a stola', 'wearing a clavi',
+        ],
+
+        arms: [
+            // fantasy
+            'wearing bracers', 'wearing vambraces', 'wearing arm guards', 'wearing gauntlets', 'wearing armlets', 
+        ],
+        
+        legs: [
+             // old time (before 1300 AD)
+            'wearing a tunic', 'wearing braies', 'wearing a loincloth', 'wearing leggings', 'wearing a chiton',    
+        ],
+        outfits: [
+            //fantasy cahracters
+            "wearing an elven queen's regalia", "wearing a dragon rider's attire", "wearing a dwarven king's ensemble",
+        ]
+    },
+    action: [
+        //basic
+        "fighting", "running", "jumping", "dancing", "swimming", "cycling", "climbing", "diving", "throwing", "catching", 
+    ],
+    scene: [
+        "in a meadow", "on the city streets", "in space", "at a bustling cafe", "on a serene beach", "in a dense forest", 
+    ],
+    lighting: [
+        'soft lighting', 'sunlit', 'cinematic lighting', 'ambient lighting', 'neon lighting', 'sun rays',
+    ],
+    details: [
+        //realistic
+        "detail", "texture", "depth", "shadow", "light", "contrast", "perspective", "focus", "clarity", "nuance", 
+    ],
+    artistStyle: {
+        artist: [
+        "in the style of Pablo Picasso", "in the style of Vincent van Gogh", "in the style of Leonardo da Vinci", 
+        ],      
+        
+        designers: [
+            "in the style of Gucci", "in the style of Louis Vuitton", "in the style of Chanel", "in the style of Hermès", 
+
+        ],
+        
+        movies: [
+            "in the style of Blade Runner", "in the style of A Clockwork Orange", "in the style of The Grand Budapest Hotel", 
+        ],
+        
+        musicVideos:[
+            "in the style of Thriller by Michael Jackson", "in the style of Bad Guy by Billie Eilish", 
+        ]
+    }
+}
