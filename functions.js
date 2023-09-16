@@ -1,4 +1,4 @@
-export const addPlusAndShuffletoDetailsButton = (target) => {
+export const addPlusAndShuffletoDetailsButton = (target, detailsButtonClickableIcons) => {
     const detailsButton = document.getElementById('details');
         let plusIcon = detailsButton.querySelector('.fa-plus')
         let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
@@ -10,4 +10,25 @@ export const addPlusAndShuffletoDetailsButton = (target) => {
         plusIcon.classList.add('buttonPressedTextColor')
         detailsButtonClickableIcons = true
         target.classList.add('topRandomButtonPressed')
+}
+export const activateUnlockIcon = (target) => {
+    let unlockIcon = target.querySelector('.fa-lock-open')
+    unlockIcon.style.opacity = '1.0';
+    unlockIcon.style.pointerEvents = 'auto';
+    unlockIcon.classList.add('buttonPressedTextColor')
+    unlockIcon.classList.add('clickable')
+}
+export const hideLockIcon = (target) => {
+    let lockIcon = target.querySelector('.fa-lock')
+    lockIcon.classList.remove('clickable')
+    lockIcon.style.opacity = '0';
+    lockIcon.style.pointerEvents = 'none';
+    lockIcon.classList.remove('buttonPressedTextColor')
+}
+export const hideUnlockIcon = (target) => {
+    let unlockIcon = target.querySelector('.fa-lock-open')
+    unlockIcon.style.opacity = '0';
+    unlockIcon.style.pointerEvents = 'none';
+    unlockIcon.classList.remove('buttonPressedTextColor')
+    unlockIcon.classList.remove('clickable')
 }
