@@ -955,7 +955,7 @@ export const data = {
         "in the style of Arne Jacobsen", "in the style of Viktor & Rolf", "in the style of Jean Prouvé",
         ],      
         
-        designers: [
+        designer: [
             "in the style of Gucci", "in the style of Louis Vuitton", "in the style of Chanel", "in the style of Hermès", 
             "in the style of Prada", "in the style of Burberry", "in the style of Fendi", "in the style of Versace", 
             "in the style of Dolce & Gabbana", "in the style of Valentino", "in the style of Saint Laurent", 
@@ -965,7 +965,7 @@ export const data = {
             "in the style of Alexander Wang", "in the style of Chloé",
         ],
         
-        movies: [
+        movie: [
             "in the style of Blade Runner", "in the style of A Clockwork Orange", "in the style of The Grand Budapest Hotel", 
             "in the style of Pulp Fiction", "in the style of Sin City", "in the style of The Shape of Water", 
             "in the style of Amélie", "in the style of Pan's Labyrinth", "in the style of Drive", "in the style of The Neon Demon", 
@@ -999,7 +999,7 @@ export const data = {
             "in the style of Donnie Darko", "in the style of Fight Club", "in the style of Cloud Atlas",
         ],
         
-        musicVideos:[
+        musicVideo:[
             "in the style of Thriller by Michael Jackson", "in the style of Bad Guy by Billie Eilish", 
             "in the style of Chandelier by Sia", "in the style of Take on Me by a-ha", 
             "in the style of Turn Down for What by DJ Snake & Lil Jon", "in the style of Smells Like Teen Spirit by Nirvana", 
