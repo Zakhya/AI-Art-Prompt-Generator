@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"/>
+    <script src="https://kit.fontawesome.com/1f5aa88509.js" crossorigin="anonymous"></script>
+    <script type="module" src="functions.js"></script>
+    <script type="module" src="data.js"></script>
+    <script type="module" src="script.js"></script>
+    <title>Suggestor</title>
+</head>
+<header>
+    <div>
+    AI Picture Promt Suggestor
+        <div class="buttonCatagories">
+            <p class="buttonCatagory" id="randomSentenceButton">Random Sentence</p>
+            <p class="buttonCatagory" id="sentenceBuilderButton">Sentence Builder</p>
+            <p class="buttonCatagory" id="materialAndPatternsButton">Mats and pats</p>
+            <p class="buttonCatagory" id="artStyleComboButton">Art Style Combos</p>
+        </div>
+    </div>
+</header>
+<body>
+<div class="topButtonContainer">
+
+    <div class="inputContainerRow">
+
+        <button class="topRandomButton" id="shotType">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+            </div>
+                Shot Type
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    
+        <button class="topRandomButton" id="shotStyle">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Shot Style
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    
+        <button class="topRandomButton" id="media">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Media
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+        
+        <button class="topRandomButton" id="adjective">
+                <div class="iconPlusContainer">
+                    <i class="fa-solid fa-lock-open detailsIcon"></i>
+                </div>
+                    Adjective
+                <div class="iconShuffleContainer">
+                    <i class="fa-solid fa-lock detailsIcon"></i>
+                </div>
+        </button>
+
+    </div>
+    <div class="inputContainerRow">
+       
+        <button class="topRandomButton" id="emotion">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Emotion
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    
+        <button class="topRandomButton" id="subject">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Subject
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    
+        <button class="topRandomButton" id="clothing">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Clothing
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+
+        <button class="topRandomButton" id="head">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Hat
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+
+        
+        
+    </div>
+    <div class="inputContainerRow">
+        
+        <button class="topRandomButton" id="body">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Shirt
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+        
+        <button class="topRandomButton" id="legs">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Legs
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+        <button class="topRandomButton" id="arms">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Arms
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+
+        <button class="topRandomButton" id="outfit">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Outfits
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+        
+    </div>
+    
+    <div class="inputContainerRow">
+
+        <button class="topRandomButton" id="action">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Action
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+
+        <button class="topRandomButton" id="scene">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Scene
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+        <button class="topRandomButton" id="lighting">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Lighting
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    
+        <button class="topRandomButton" id="details">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-plus fa-shake detailsIcon"></i>
+            </div>
+                Details
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-shuffle detailsIcon"></i>
+            </div>
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    
+    </div>
+
+    <div class="inputContainerRow">
+
+        <button class="topRandomButton" id="artistStyle">
+            <div class="iconPlusContainer">
+                <i class="fa-solid fa-lock-open detailsIcon"></i>
+            </div>
+                Artist
+            <div class="iconShuffleContainer">
+                <i class="fa-solid fa-lock detailsIcon"></i>
+            </div>
+        </button>
+    </div>
+</div>
+
+<div>
+    <div id="recommendationSentence"></div>
+
+</div>
+<div class="copyIconContainer">
+    <i class="fa-solid fa-shuffle fullSentenceShuffle"></i>
+    <i class="fa-solid fa-copy"></i>
+</div>
+
+<div id="adjustmentListContainer">
+
+</div>
+
+</body>
+</html>
