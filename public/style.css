@@ -220,20 +220,17 @@ i{
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px inset black;
+    border: 1px inset black;0
 }
 .artComboUnlock{
     padding-inline: 5px;
 }
 .artComboLock{
     padding-inline: 7px;
-    
 }
 .subjectartComboUnlock{
     padding-inline: 12px;
-    
 }
 .subjectartCombolock{
     padding-inline: 14px;
-
 }

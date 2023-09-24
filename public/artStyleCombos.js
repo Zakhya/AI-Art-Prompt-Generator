@@ -6,6 +6,7 @@ const materialAndPatternsButton = document.querySelector('#materialAndPatternsBu
 const recommendationSentence = document.querySelector('#recommendationSentence')
 const artStyleComboButton = document.querySelector('#artStyleComboButton')
 const fullSentenceShuffleButton = document.querySelector('.fullSentenceShuffle')
+const adjustmentListContainer = document.querySelector('#adjustmentListContainer')
 artStyleComboButton.classList.add('activeButton')
 
 fullSentenceShuffleButton.addEventListener('click', e => {
@@ -62,6 +63,29 @@ let artStyleObject = {
         isLocked: false,
     },
 }
+let sortedArtStyleObject
+function sortArr () {
+    const orderArray = ['subject', 'designer', 'artist', 'movie', 'musicVideo'];
+    const sortKeys = (a, b) => {
+        const baseA = a.replace(/\d+$/, '')
+        const baseB = b.replace(/\d+$/, '')
+        const indexA = orderArray.indexOf(baseA)
+        const indexB = orderArray.indexOf(baseB)
+        if (indexA === indexB) {
+            return parseInt(a.replace(/^\D+/g, '') || 0) - parseInt(b.replace(/^\D+/g, '') || 0)
+        }
+        return indexA - indexB; 
+    };
+    
+    sortedArtStyleObject = Object.keys(artStyleObject)
+    .sort(sortKeys)
+    .reduce((acc, key) => {
+        acc[key] = artStyleObject[key];
+        return acc;
+    }, {});
+}
+sortArr()
+
 
 document.addEventListener('DOMContentLoaded', (event) => { // for navigator 
     const copyButton = document.querySelector('.fa-copy')
@@ -86,43 +110,59 @@ document.addEventListener('DOMContentLoaded', (event) => { // for navigator
 });
 
 function shuffleSelectedValues() {
-    const enabledKeys = Object.keys(artStyleObject).filter(key => artStyleObject[key].enabled);
-    const styleKeys = enabledKeys.filter(k => k.startsWith('artist') || k.startsWith('movie') || k.startsWith('musicVideo'));
-    let styleCategoryIndex = 0;
-
+    const enabledKeys = Object.keys(sortedArtStyleObject).filter(key => sortedArtStyleObject[key].enabled)
+    const designerKeys = enabledKeys.filter(k => k.startsWith('designer'))
+    const styleKeys = enabledKeys.filter(k => k.startsWith('artist') || k.startsWith('movie') || k.startsWith('musicVideo'))
+    let styleCategoryIndex = 0
+    let designerCatagoryIndex = 0
     for (let i = 0; i < enabledKeys.length; i++) {
         const key = enabledKeys[i];
-        const isLastStyleKey = (styleCategoryIndex === styleKeys.length - 1);
+        const isLastStyleKey = (styleCategoryIndex === styleKeys.length - 1)
+        const isLastDesignerKey = (designerCatagoryIndex === designerKeys.length - 1)
         
-
-        if (key === 'subject' && artStyleObject[key].isLocked === false) {
-            artStyleObject[key].value = data.subject[Math.floor(Math.random() * data.subject.length)];
+        if (key === 'subject' && sortedArtStyleObject[key].isLocked === false) {
+            sortedArtStyleObject[key].value = data.subject[Math.floor(Math.random() * data.subject.length)];
         } else {
-            if(artStyleObject[key].isLocked === true && (key.startsWith('artist') || key.startsWith('movie') || key.startsWith('musicVideo'))){
+            if(sortedArtStyleObject[key].isLocked === true && (key.startsWith('artist') || key.startsWith('movie') || key.startsWith('musicVideo'))){
                 styleCategoryIndex++;
                 continue
-            } else if (artStyleObject[key].isLocked === true){
+            } else if (sortedArtStyleObject[key].isLocked === true){
                 continue
             }
-            const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "");
-            const randomCatArray = data.artistStyle[trimmedKey];
-            let randomVal = randomCatArray[Math.floor(Math.random() * randomCatArray.length)];
-            if (key.startsWith('designer') && artStyleObject[key].isLocked === false) {
-                randomVal = randomVal.replace('in the style of', 'wearing').trim();
-                randomVal += ' style clothing';
-
-                // Add a comma after the designer if there's any other subsequent key (not only style keys).
-                if (i < enabledKeys.length - 1) {
+            const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "")
+            const randomCatArray = data.artistStyle[trimmedKey]
+            let randomVal = randomCatArray[Math.floor(Math.random() * randomCatArray.length)]
+            if (key.startsWith('designer') && sortedArtStyleObject[key].isLocked === false) {
+                designerCatagoryIndex++
+                if(designerCatagoryIndex === 1 && isLastDesignerKey){
+                    randomVal = randomVal.replace('in the style of', 'wearing').trim();
+                    randomVal += ' style clothing';
+                } else if(designerCatagoryIndex === 1 && !isLastDesignerKey){
+                    randomVal = randomVal.replace('in the style of', 'wearing').trim();
+                    if(designerKeys.length > 2){
+                        randomVal += ','
+                    }
+                } else if(designerCatagoryIndex > 1 && !isLastDesignerKey){
+                    randomVal = randomVal.replace('in the style of', '').trim();
                     randomVal += ',';
+                } else if(designerCatagoryIndex > 1 && isLastDesignerKey){
+                    randomVal = randomVal.replace('in the style of', '').trim();
+                    randomVal = ' and ' + randomVal + ' style clothing';
+                }
+
+                if (i < enabledKeys.length - 1) {
+                    if (isLastDesignerKey){
+                        randomVal += ',';
+                    }
                 }
             } else if (randomVal.startsWith('in the style of') && (key.startsWith('artist') || key.startsWith('movie') || key.startsWith('musicVideo'))) {
                 styleCategoryIndex++;
-                if(artStyleObject[key].isLocked === true) return
+                if(sortedArtStyleObject[key].isLocked === true) return
 
                 if (styleCategoryIndex === 1 && !isLastStyleKey) {
                     randomVal += ',';
                 } else if (isLastStyleKey && styleCategoryIndex === 1) {
-                    artStyleObject[key].value = randomVal;
+                    sortedArtStyleObject[key].value = randomVal;
                     return
                 } else if(isLastStyleKey) {
                     randomVal = randomVal.replace('in the style of', 'and').trim();
@@ -130,18 +170,36 @@ function shuffleSelectedValues() {
                     randomVal = randomVal.replace('in the style of', '').trim() + ',';
                 }
             }
-            if(artStyleObject[key].isLocked === true) return
-            artStyleObject[key].value = randomVal;
+            if(sortedArtStyleObject[key].isLocked === true) return
+            sortedArtStyleObject[key].value = randomVal;
         }
     }
 }
 
+function addNewEntry(type) {
+    const relatedKeys = Object.keys(artStyleObject).filter(key => key.startsWith(type));
+    
+    const nextKeyNumber = relatedKeys.length + 1;
 
+    const newKey = `${type}${nextKeyNumber}`;
+
+    artStyleObject[newKey] = {
+        enabled: true,
+        value: '',
+        isLocked: false,
+    };
+    sortArr()
+    shuffleSelectedValues()
+    createAdjustmentList()
+    updateAdjustmentList()
+    updateDisplaySentence()
+    console.log(sortedArtStyleObject);
+}
 
 function updateDisplaySentence(){
     recommendationSentence.innerHTML = '';
 
-    const enabledKeys = Object.keys(artStyleObject).filter(key => artStyleObject[key].enabled);
+    const enabledKeys = Object.keys(sortedArtStyleObject).filter(key => sortedArtStyleObject[key].enabled);
 
     enabledKeys.forEach((key, i) => {
         let container = document.createElement('div');
@@ -152,7 +210,7 @@ function updateDisplaySentence(){
 
         let word = document.createElement('p');
         word.setAttribute('class', 'word');
-        let wordValue = artStyleObject[key].value;
+        let wordValue = sortedArtStyleObject[key].value;
         word.textContent = wordValue;
         label.textContent = key;
         container.appendChild(word);
@@ -162,17 +220,17 @@ function updateDisplaySentence(){
 }
 
 function updateAdjustmentList(){
-    Object.keys(artStyleObject).forEach(key => {
-        if(artStyleObject[key].enabled === true){
+    Object.keys(sortedArtStyleObject).forEach(key => {
+        if(sortedArtStyleObject[key].enabled === true){
             let targetButton = adjustmentListContainer.querySelector(`button#${key}EnableButton`)
             const targetInput = adjustmentListContainer.querySelector(`input#${key}AdjustmentInput`);
-            targetInput.value = artStyleObject[key].value
+            targetInput.value = sortedArtStyleObject[key].value
             targetButton.textContent = 'disable'
             targetButton.setAttribute('class', 'enableButton enableButtonPressed')
         } else {
             let targetButton = adjustmentListContainer.querySelector(`button#${key}EnableButton`)
             const targetInput = adjustmentListContainer.querySelector(`input#${key}AdjustmentInput`);
-            targetInput.value = artStyleObject[key].value
+            targetInput.value = sortedArtStyleObject[key].value
             targetButton.textContent = 'enable'
             targetButton.setAttribute('class', 'enableButton')
             
@@ -181,8 +239,9 @@ function updateAdjustmentList(){
 }
 
 function createAdjustmentList() {
-Object.keys(artStyleObject).forEach(key => {
-
+adjustmentListContainer.innerHTML = ''
+Object.keys(sortedArtStyleObject).forEach(key => {
+const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "");
 let enableButton = document.createElement('button')
 enableButton.setAttribute('class','enableButton')
 key === 'subject' ? enableButton.setAttribute('id',`subjectEnableButton`) 
@@ -194,16 +253,15 @@ if(e.target.textContent === 'enable'){
  
     e.target.textContent = 'disable'
     e.target.setAttribute('class', 'enableButton enableButtonPressed')
-    artStyleObject[key].enabled = true
+    sortedArtStyleObject[key].enabled = true
     const input = document.querySelector(`input#${key}AdjustmentInput`)
     if(input.value === ''){
-        const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "");
         const length = data['artistStyle'][trimmedKey].length
         const randomInx = Math.floor(Math.random() * length)
         const randomVal = data['artistStyle'][trimmedKey][randomInx]
-        artStyleObject[key].value = randomVal
+        sortedArtStyleObject[key].value = randomVal
         input.value = randomVal
-        console.log(artStyleObject)
+        console.log(sortedArtStyleObject)
     }
     shuffleSelectedValues()
     updateDisplaySentence()
@@ -211,8 +269,8 @@ if(e.target.textContent === 'enable'){
 }else if(e.target.textContent === 'disable'){
     e.target.textContent = 'enable'
     e.target.setAttribute('class', 'enableButton')
-    artStyleObject[key].enabled = false
-    console.log(artStyleObject)
+    sortedArtStyleObject[key].enabled = false
+    console.log(sortedArtStyleObject)
     shuffleSelectedValues()
     updateDisplaySentence()
     updateAdjustmentList()
@@ -226,7 +284,7 @@ plusButton.setAttribute('class', 'fa-solid fa-plus')
 unlockButtonContainer.setAttribute('class', 'unlockButtonContainer')
 unlockButton.setAttribute('class', 'fa-solid fa-lock-open artComboUnlock')
 unlockButton.addEventListener('click', e => {
-    artStyleObject[key].isLocked = true
+    sortedArtStyleObject[key].isLocked = true
     unlockButtonContainer.innerHTML = ''
     lockButton.setAttribute('class', 'fa-solid fa-lock artComboLock')
     if(key === 'subject'){
@@ -238,7 +296,7 @@ unlockButton.addEventListener('click', e => {
     }
 })
 lockButton.addEventListener('click', e => {
-    artStyleObject[key].isLocked = false
+    sortedArtStyleObject[key].isLocked = false
     unlockButtonContainer.innerHTML = ''
     unlockButton.setAttribute('class', 'fa-solid fa-lock-open artComboUnlock')
     if(key === 'subject'){
@@ -256,18 +314,21 @@ if(key === 'subject'){
     unlockButtonContainer.appendChild(unlockButton)
     unlockButtonContainer.appendChild(plusButton)
 }
+plusButton.addEventListener('click', e => {
+    addNewEntry(trimmedKey)  
+})
 const dropdown = document.createElement('select')
 dropdown.setAttribute('class', 'dropdown')
 dropdown.addEventListener('change', e => {
     if(e.target.value === 'none'){
-    artStyleObject[key].value = ''
+    sortedArtStyleObject[key].value = ''
     } else {
     if(typeof value === 'object'){
         console.log('isObject', 'true')
     }
 
-    artStyleObject[key].value = e.target.value
-    artStyleObject[key].enabled = true
+    sortedArtStyleObject[key].value = e.target.value
+    sortedArtStyleObject[key].enabled = true
     enableButton.textContent = 'disable'
     enableButton.setAttribute('class', 'enableButton enableButtonPressed')
     }
@@ -296,13 +357,13 @@ itemInput.setAttribute('type', 'text')
 
 itemInput.addEventListener('input', e => {
 if(e.target.value  === ''){
-    artStyleObject[key].value = ''
+    sortedArtStyleObject[key].value = ''
     dropdown.value = 'none'
     enableButton.textContent = 'enable'
     enableButton.setAttribute('class', 'enableButton')
-    artStyleObject[key].enabled = false
+    sortedArtStyleObject[key].enabled = false
 } else {
-    artStyleObject[key].value = e.target.value 
+    sortedArtStyleObject[key].value = e.target.value 
 }
 updateDisplaySentence()
 })
