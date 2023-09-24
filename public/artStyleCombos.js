@@ -52,20 +52,20 @@ let artStyleObject = {
         value: '',
         isLocked: false,
     },
-    movie1: {
-        enabled: true,
+    musicVideo1: {
+        enabled: false,
         value: '',
         isLocked: false,
     },
-    musicVideo1: {
-        enabled: false,
+    movie1: {
+        enabled: true,
         value: '',
         isLocked: false,
     },
 }
 let sortedArtStyleObject
 function sortArr () {
-    const orderArray = ['subject', 'designer', 'artist', 'movie', 'musicVideo'];
+    const orderArray = ['subject', 'designer', 'artist', 'musicVideo', 'movie'];
     const sortKeys = (a, b) => {
         const baseA = a.replace(/\d+$/, '')
         const baseB = b.replace(/\d+$/, '')
@@ -93,10 +93,10 @@ document.addEventListener('DOMContentLoaded', (event) => { // for navigator
         const wordList = recommendationSentence.querySelectorAll('p.word')
         console.log("wordList:", wordList)
         let sentenceArray = []
-        Object.keys(artStyleObject).forEach(key => {
+        Object.keys(sortedArtStyleObject).forEach(key => {
             console.log(key)
-                if(artStyleObject[key].value !== '' && artStyleObject[key].value !== 'none' && artStyleObject[key].enabled === true){
-                    sentenceArray.push(artStyleObject[key].value)
+                if(sortedArtStyleObject[key].value !== '' && sortedArtStyleObject[key].value !== 'none' && sortedArtStyleObject[key].enabled === true){
+                    sentenceArray.push(sortedArtStyleObject[key].value)
                 }  
         })
         navigator.clipboard.writeText(sentenceArray.join(' '))
@@ -113,12 +113,15 @@ function shuffleSelectedValues() {
     const enabledKeys = Object.keys(sortedArtStyleObject).filter(key => sortedArtStyleObject[key].enabled)
     const designerKeys = enabledKeys.filter(k => k.startsWith('designer'))
     const styleKeys = enabledKeys.filter(k => k.startsWith('artist') || k.startsWith('movie') || k.startsWith('musicVideo'))
+    const movieKeys = enabledKeys.filter(k => k.startsWith('movie'))
     let styleCategoryIndex = 0
+    let movieCatagoryIndex = 0
     let designerCatagoryIndex = 0
     for (let i = 0; i < enabledKeys.length; i++) {
         const key = enabledKeys[i];
         const isLastStyleKey = (styleCategoryIndex === styleKeys.length - 1)
         const isLastDesignerKey = (designerCatagoryIndex === designerKeys.length - 1)
+        const isLastMovieKey = (movieCatagoryIndex === movieKeys.length - 1)
         
         if (key === 'subject' && sortedArtStyleObject[key].isLocked === false) {
             sortedArtStyleObject[key].value = data.subject[Math.floor(Math.random() * data.subject.length)];
@@ -157,20 +160,43 @@ function shuffleSelectedValues() {
                 }
             } else if (randomVal.startsWith('in the style of') && (key.startsWith('artist') || key.startsWith('movie') || key.startsWith('musicVideo'))) {
                 styleCategoryIndex++;
-                if(sortedArtStyleObject[key].isLocked === true) return
+                if(key.startsWith('artist') || key.startsWith('musicVideo')){
 
-                if (styleCategoryIndex === 1 && !isLastStyleKey) {
-                    randomVal += ',';
-                } else if (isLastStyleKey && styleCategoryIndex === 1) {
-                    sortedArtStyleObject[key].value = randomVal;
-                    return
-                } else if(isLastStyleKey) {
-                    randomVal = randomVal.replace('in the style of', 'and').trim();
-                }else {
-                    randomVal = randomVal.replace('in the style of', '').trim() + ',';
+                    if(sortedArtStyleObject[key].isLocked === true) return
+                    
+                    if (styleCategoryIndex === 1 && !isLastStyleKey) {
+                        randomVal = randomVal.replace('in the style of', 'in the art style of').trim();
+                        randomVal += ',';
+                    } else if (isLastStyleKey && styleCategoryIndex === 1) {
+                        randomVal = randomVal.replace('in the style of', 'in the art style of').trim();
+                        sortedArtStyleObject[key].value = randomVal;
+                    } else if(isLastStyleKey) {
+                        randomVal = randomVal.replace('in the style of', 'and').trim();
+                    }else {
+                        randomVal = randomVal.replace('in the style of', '').trim() + ',';
+                    }
+                } else if(key.startsWith('movie')){
+                    movieCatagoryIndex++
+                    if(sortedArtStyleObject[key].isLocked === true) return
+                    if (movieCatagoryIndex === 1 && !isLastMovieKey && styleCategoryIndex > 2) {
+                        randomVal = randomVal.replace('in the style of', 'and the movies').trim();
+                        if(movieKeys.length > 2){
+                            randomVal += ','
+                        }
+                    } else if (movieCatagoryIndex === 1 && !isLastMovieKey) {
+                        randomVal = randomVal.replace('in the style of', 'in the style of the movies').trim();
+                    } else if (isLastMovieKey && movieCatagoryIndex === 1 && isLastStyleKey) {
+                        randomVal = randomVal.replace('in the style of', 'and the movie').trim();
+                        sortedArtStyleObject[key].value = randomVal;
+                    } else if(isLastMovieKey) {
+                        randomVal = randomVal.replace('in the style of', 'and').trim();
+                    }else {
+                        randomVal = randomVal.replace('in the style of', '').trim() + ',';
+                    }
+
                 }
-            }
-            if(sortedArtStyleObject[key].isLocked === true) return
+                }
+                if(sortedArtStyleObject[key].isLocked === true) return
             sortedArtStyleObject[key].value = randomVal;
         }
     }
@@ -241,6 +267,7 @@ function updateAdjustmentList(){
 function createAdjustmentList() {
 adjustmentListContainer.innerHTML = ''
 Object.keys(sortedArtStyleObject).forEach(key => {
+const hasNumbers  = /([02-9])/g.test(key)
 const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "");
 let enableButton = document.createElement('button')
 enableButton.setAttribute('class','enableButton')
@@ -280,7 +307,9 @@ const unlockButton = document.createElement('i')
 const unlockButtonContainer = document.createElement('div')
 const lockButton = document.createElement('i')
 const plusButton = document.createElement('i')
+const minusButton = document.createElement('i')
 plusButton.setAttribute('class', 'fa-solid fa-plus')
+minusButton.setAttribute('class', 'fa-solid fa-minus')
 unlockButtonContainer.setAttribute('class', 'unlockButtonContainer')
 unlockButton.setAttribute('class', 'fa-solid fa-lock-open artComboUnlock')
 unlockButton.addEventListener('click', e => {
@@ -290,7 +319,10 @@ unlockButton.addEventListener('click', e => {
     if(key === 'subject'){
         lockButton.setAttribute('class', 'fa-solid fa-lock subjectartCombolock')
         unlockButtonContainer.appendChild(lockButton)
-    } else {
+    } else if (hasNumbers){
+        unlockButtonContainer.appendChild(lockButton)
+        unlockButtonContainer.appendChild(minusButton)
+    }else {
         unlockButtonContainer.appendChild(lockButton)
         unlockButtonContainer.appendChild(plusButton)
     }
@@ -302,14 +334,28 @@ lockButton.addEventListener('click', e => {
     if(key === 'subject'){
         unlockButton.setAttribute('class', 'fa-solid fa-lock-open subjectartComboUnlock')
         unlockButtonContainer.appendChild(unlockButton)
-    } else {
+    } else if (hasNumbers){
+        unlockButtonContainer.appendChild(unlockButton)
+        unlockButtonContainer.appendChild(minusButton)
+    }else {
         unlockButtonContainer.appendChild(unlockButton)
         unlockButtonContainer.appendChild(plusButton)
     }
 })
+minusButton.addEventListener('click', e => {
+    delete artStyleObject[key]
+    sortArr()
+    shuffleSelectedValues()
+    createAdjustmentList()
+    updateAdjustmentList()
+    updateDisplaySentence()
+})
 if(key === 'subject'){
     unlockButton.setAttribute('class', 'fa-solid fa-lock-open subjectartComboUnlock')
     unlockButtonContainer.appendChild(unlockButton)
+}  else if (hasNumbers){
+    unlockButtonContainer.appendChild(unlockButton)
+    unlockButtonContainer.appendChild(minusButton)
 } else {
     unlockButtonContainer.appendChild(unlockButton)
     unlockButtonContainer.appendChild(plusButton)
