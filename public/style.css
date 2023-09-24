@@ -216,3 +216,24 @@ i{
 .wordButton:active{
     background-color: #ABC4AA;   
 }
+.unlockButtonContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px inset black;
+}
+.artComboUnlock{
+    padding-inline: 5px;
+}
+.artComboLock{
+    padding-inline: 7px;
+    
+}
+.subjectartComboUnlock{
+    padding-inline: 12px;
+    
+}
+.subjectartCombolock{
+    padding-inline: 14px;
+
+}
