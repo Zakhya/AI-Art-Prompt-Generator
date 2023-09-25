@@ -5,9 +5,9 @@ const randomSentenceButton = document.querySelector('#randomSentenceButton')
 const materialAndPatternsButton = document.querySelector('#materialAndPatternsButton')
 const recommendationSentence = document.querySelector('#recommendationSentence')
 const artStyleComboButton = document.querySelector('#artStyleComboButton')
-const fullSentenceShuffleButton = document.querySelector('.fullSentenceShuffle')
 const adjustmentListContainer = document.querySelector('#adjustmentListContainer')
 artStyleComboButton.classList.add('activeButton')
+const fullSentenceShuffleButton = document.querySelector('.fullSentenceShuffle')
 
 fullSentenceShuffleButton.addEventListener('click', e => {
     shuffleSelectedValues()

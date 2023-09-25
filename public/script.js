@@ -492,6 +492,7 @@ document.addEventListener('DOMContentLoaded', (event) => { // for navigator
 
 const createUI = () => {
 Object.keys(data).forEach((key, i) => {
+    if(key === 'pattern' || key === 'material') return
     const value = data[key]
     const topButtonList = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
     // const dropdown = document.getElementById(`${key}`);
