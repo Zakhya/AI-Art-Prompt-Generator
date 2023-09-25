@@ -376,7 +376,7 @@ export const data = {
             'solar flare headdress',
             'feather hat', 'witch-hat','charmed choker',
             'shawl','robe',"wizard's hat",'mystic mask',
-            'bandana', 'with medusa snake hair',
+            'bandana', 'medusa snake hair',
             'scarf',
         ],
     

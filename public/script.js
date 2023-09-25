@@ -150,7 +150,8 @@ const updateAdjustmentList = function() {
         } else {  // If it's an object without a value property (like clothing)
             let clothingCombinedValue = "";
             Object.keys(item).forEach(subKey => {
-                if (item[subKey] !== 'enabled' && item[subKey] !== 'disabled' && item[subKey] !== 'value' && item[subKey] !== undefined && typeof item[subKey] !== 'boolean') {  // To avoid the 'enabled' property in clothing
+                if (item[subKey] !== 'enabled' && item[subKey] !== 'disabled' && item[subKey] !== 'value' 
+                && item[subKey] !== undefined && typeof item[subKey] !== 'boolean' && subKey !== "value") {  // To avoid the 'enabled' property in clothing
                     const subItem = item[subKey];
                     if(currentRecomendationObject[key][subKey].enabled === true){
                         let targetButton = adjustmentListContainer.querySelector(`button#${subKey}EnableButton`)
@@ -161,6 +162,8 @@ const updateAdjustmentList = function() {
                     } else {
                         let targetButton = adjustmentListContainer.querySelector(`button#${subKey}EnableButton`)
                         const targetInput = adjustmentListContainer.querySelector(`input#${subKey}AdjustmentInput`);
+                        console.log("subKey", subKey)
+                        console.log("currentRecomendationObject[key][subKey].value", currentRecomendationObject[key][subKey].value)
                         targetInput.value = currentRecomendationObject[key][subKey].value
                         targetButton.textContent = 'enable'
                         targetButton.setAttribute('class', 'enableButton')
@@ -490,6 +493,10 @@ document.addEventListener('DOMContentLoaded', (event) => { // for navigator
     })                                                
 });
 
+const setTopButtonActive = () => {
+
+}
+
 const createUI = () => {
 Object.keys(data).forEach((key, i) => {
     if(key === 'pattern' || key === 'material') return
@@ -575,18 +582,29 @@ Object.keys(data).forEach((key, i) => {
         if(e.target.value === 'none'){
             Object.keys(currentRecomendationObject[key]).forEach(subKey => {
                 currentRecomendationObject[key][subKey].value = ''
+                currentRecomendationObject[key][subKey].enabled = false
+                let subKeyEnableButton = querySelector(`#${subKey}EnableButton`)
+                subKeyEnableButton.textContent = 'disable'
+                subKeyEnableButton.setAttribute('class', 'enableButton')
             })
         } else {
             if(typeof value === 'object'){
                 console.log('isObject', 'true')
             }
             console.log('isObject', 'false')
-            
-            currentRecomendationObject[key][key] = e.target.value
+            Object.keys(currentRecomendationObject[key]).forEach(subKey => {
+                if(subKey === 'enabled' || subKey === 'disabled' || subKey === 'value' 
+                || subKey === undefined || typeof subKey === 'boolean') return
+                    // let subKeyEnableButton = document.querySelector(`#${subKey}EnableButton`)
+                    // console.log(subKeyEnableButton)
+                    // subKeyEnableButton.textContent = 'enable'
+                    // subKeyEnableButton.classList.remove('enableButtonPressed')
+                    currentRecomendationObject[key][subKey].value = ''
+            })
+            currentRecomendationObject[key].value = e.target.value
             currentRecomendationObject[key].enabled = true
             enableButton.textContent = 'disable'
             enableButton.setAttribute('class', 'enableButton enableButtonPressed')
-            
             
         }
         console.log(currentRecomendationObject)
@@ -596,52 +614,52 @@ Object.keys(data).forEach((key, i) => {
     // create adjustment list
     const itemContainer = document.createElement('div')
     itemContainer.setAttribute('class', 'adjustmentListItemContainer')
-        const itemContainerDiv = document.createElement('div')
-        itemContainerDiv.classList.add('itemContainerDiv')
-        const itemDetailsFilter = document.createElement('div')
-        const p = document.createElement('p')
-        p.textContent = 'something to see'
-        let itemLabelDiv = document.createElement('div')
-        itemLabelDiv.setAttribute('class', 'adjustmentInputLabelContainer')
-        let itemlabel = document.createElement('p') 
-        itemlabel.setAttribute('for', `${key}AdjustmentInput`)
-        itemlabel.setAttribute('class', `adjustmentInputLabel`)
-        itemlabel.textContent = key
-        itemLabelDiv.appendChild(itemlabel)
+    const itemContainerDiv = document.createElement('div')
+    itemContainerDiv.classList.add('itemContainerDiv')
+    const itemDetailsFilter = document.createElement('div')
+    const p = document.createElement('p')
+    p.textContent = 'something to see'
+    let itemLabelDiv = document.createElement('div')
+    itemLabelDiv.setAttribute('class', 'adjustmentInputLabelContainer')
+    let itemlabel = document.createElement('p') 
+    itemlabel.setAttribute('for', `${key}AdjustmentInput`)
+    itemlabel.setAttribute('class', `adjustmentInputLabel`)
+    itemlabel.textContent = key
+    itemLabelDiv.appendChild(itemlabel)
+    
+    let itemInput = document.createElement('input')
+    itemInput.setAttribute('id', `${key}AdjustmentInput`)
+    itemInput.setAttribute('class', `adjustmentInput`)
+    itemInput.setAttribute('type', 'text')
+    
+    itemInput.addEventListener('input', e => {
+        if(e.target.value  === ''){
+            currentRecomendationObject[key].value = ''
+            dropdown.value = 'none'
+            enableButton.textContent = 'enable'
+            enableButton.setAttribute('class', 'enableButton')
+            currentRecomendationObject[key].enabled = false
+        } else {
+            currentRecomendationObject[key] = e.target.value
+        }
+        updateFinalSentence()
+        updateAdjustmentList()
         
-        let itemInput = document.createElement('input')
-        itemInput.setAttribute('id', `${key}AdjustmentInput`)
-        itemInput.setAttribute('class', `adjustmentInput`)
-        itemInput.setAttribute('type', 'text')
-        
-        itemInput.addEventListener('input', e => {
-            if(e.target.value  === ''){
-                currentRecomendationObject[key].value = ''
-                dropdown.value = 'none'
-                enableButton.textContent = 'enable'
-                enableButton.setAttribute('class', 'enableButton')
-                currentRecomendationObject[key].enabled = false
-            } else {
-                currentRecomendationObject[key] = e.target.value
-            }
-            updateFinalSentence()
-            updateAdjustmentList()
-            
-        })
-        
-        itemContainerDiv.appendChild(enableButton)
-        itemContainerDiv.appendChild(itemLabelDiv)
-        itemContainerDiv.appendChild(dropdown)
-        itemContainerDiv.appendChild(itemInput)
-        itemContainer.appendChild(itemContainerDiv)
-        itemDetailsFilter.appendChild(p)
-        itemContainer.appendChild(itemDetailsFilter)
+    })
+    
+    itemContainerDiv.appendChild(enableButton)
+    itemContainerDiv.appendChild(itemLabelDiv)
+    itemContainerDiv.appendChild(dropdown)
+    itemContainerDiv.appendChild(itemInput)
+    itemContainer.appendChild(itemContainerDiv)
+    itemDetailsFilter.appendChild(p)
+    itemContainer.appendChild(itemDetailsFilter)
 
 
-        adjustmentListContainer.appendChild(itemContainer)
-        let fisrtItem = true 
-        
-        if(fisrtItem === true){
+    adjustmentListContainer.appendChild(itemContainer)
+    let fisrtItem = true 
+    
+    if(fisrtItem === true){
         const firstOption = document.createElement('option');
         firstOption.value = 'none'
         firstOption.textContent = 'none';
@@ -666,7 +684,7 @@ Object.keys(data).forEach((key, i) => {
             })
         })
     }
-
+        if(key !== 'artistStyle'){
         Object.keys(data[key]).forEach(subKey => {
             let enableButton = document.createElement('button')
             enableButton.setAttribute('class','enableButton')
@@ -679,19 +697,6 @@ Object.keys(data).forEach((key, i) => {
                     if(button.id === enableButton.id){
                         let topButton = topButtonContainer.querySelector(`#${key}`)
                         topButton.setAttribute('class', 'topRandomButton topRandomButtonPressed')
-                        console.log(e.target)
-                        // const detailsButton = document.getElementById('details');
-                        // let plusIcon = detailsButton.querySelector('.fa-plus')
-                        // let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
-                        // plusIcon.style.opacity = '1.0';
-                        // shuffleIcon.style.opacity = '1.0';
-                        // plusIcon.style.pointerEvents = 'auto';
-                        // shuffleIcon.style.pointerEvents = 'auto';
-                        // shuffleIcon.classList.add('buttonPressedTextColor')
-                        // plusIcon.classList.add('buttonPressedTextColor')
-                        // e.target.textContent = 'disable'
-                        // e.target.setAttribute('class', 'enableButton enableButtonPressed')
-                        // currentRecomendationObject[key][subKey].enabled = true
                         updateFinalSentence()
                         updateAdjustmentList()
                     }
@@ -802,8 +807,15 @@ Object.keys(data).forEach((key, i) => {
             fisrtItem = false
             dropdown.appendChild(firstOption);
             }
+            console.log(subKey)
+            data['clothing'][subKey].forEach(e => {
+                const option = document.createElement('option');
+                option.value = e;
+                option.textContent = e;
+                dropdown.appendChild(option);
+            })
         })
-
+    }
         
     } else{
 
@@ -846,10 +858,10 @@ Object.keys(data).forEach((key, i) => {
         let topButton = topButtonContainer.querySelector(`#${key}`)
         topButton.setAttribute('class', 'topRandomButton')
         let unlockIcon = topButton.querySelector('.fa-lock-open')
-                unlockIcon.style.opacity = '0';
-                unlockIcon.style.pointerEvents = 'none';
-                unlockIcon.classList.remove('buttonPressedTextColor')
-                unlockIcon.classList.remove('clickable')
+        unlockIcon.style.opacity = '0';
+        unlockIcon.style.pointerEvents = 'none';
+        unlockIcon.classList.remove('buttonPressedTextColor')
+        unlockIcon.classList.remove('clickable')
         const detailsButton = document.getElementById('details');
         let plusIcon = detailsButton.querySelector('.fa-plus')
         let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
@@ -871,13 +883,29 @@ const dropdown = document.createElement('select')
 dropdown.setAttribute('class', 'dropdown')
 dropdown.addEventListener('change', e => {
     if(e.target.value === 'none'){
-        currentRecomendationObject[key][key] = ''
+        currentRecomendationObject[key] = ''
     } else {
         if(typeof value === 'object'){
             console.log('isObject', 'true')
         }
-        
-        currentRecomendationObject[key][key] = e.target.value
+        let topButton = topButtonContainer.querySelector(`#${key}`)
+        topButton.setAttribute('class', 'topRandomButton topRandomButtonPressed')
+        let unlockIcon = topButton.querySelector('.fa-lock-open')
+        unlockIcon.style.opacity = '1.0';
+        unlockIcon.style.pointerEvents = 'auto';
+        unlockIcon.classList.add('buttonPressedTextColor')
+        unlockIcon.classList.add('clickable')
+        const detailsButton = document.getElementById('details');
+        let plusIcon = detailsButton.querySelector('.fa-plus')
+        let shuffleIcon = detailsButton.querySelector('.fa-shuffle')
+        plusIcon.style.opacity = '1.0';
+        shuffleIcon.style.opacity = '1.0';
+        plusIcon.style.pointerEvents = 'auto';
+        shuffleIcon.style.pointerEvents = 'auto';
+        shuffleIcon.classList.add('buttonPressedTextColor')
+        plusIcon.classList.add('buttonPressedTextColor')
+
+        currentRecomendationObject[key].value = e.target.value
         currentRecomendationObject[key].enabled = true
         enableButton.textContent = 'disable'
         enableButton.setAttribute('class', 'enableButton enableButtonPressed')

@@ -120,7 +120,7 @@ function shuffleSelectedValues() {
             const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "")
             const randomCatArray = data[trimmedKey]
             let randomVal = randomCatArray[Math.floor(Math.random() * randomCatArray.length)]
-            if(materialCatagoryIndex === 1 && materialKeys.length > 2){
+            if(materialCatagoryIndex >= 1 && materialKeys.length > 2 && materialCatagoryIndex < materialKeys.length - 1){
                 randomVal += ','
                 sortedMatsAndPatsObject[key].value = randomVal;
             }else if(materialCatagoryIndex === 1 && materialKeys.length === 1){
@@ -130,9 +130,13 @@ function shuffleSelectedValues() {
                 sortedMatsAndPatsObject[key].value = randomVal;                
             } else if(materialCatagoryIndex === materialKeys.length) {
                 sortedMatsAndPatsObject[key].value = randomVal;                
-            } else {
+            } else if(materialCatagoryIndex === materialKeys.length - 1){
                 randomVal += ' and'
                 sortedMatsAndPatsObject[key].value = randomVal;                
+            } else {
+                sortedMatsAndPatsObject[key].value = randomVal;                
+                randomVal += ','
+                
             }
         }
     }
