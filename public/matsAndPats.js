@@ -17,7 +17,7 @@ fullSentenceShuffleButton.addEventListener('click', e => {
 sentenceBuilderButton.addEventListener('click', e => {
     const location = window.location
     removeActiveButtonClass(location)
-    window.location.href = 'sentenceBuilder.html'
+    window.location.href = 'animalHybrid.html'
 })
 randomSentenceButton.addEventListener('click', e => {
     const location = window.location

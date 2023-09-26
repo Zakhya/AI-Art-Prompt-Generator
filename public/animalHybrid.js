@@ -1,12 +1,12 @@
 import { data } from "./data.js"
 import { removeActiveButtonClass } from "./functions.js"
-const sentenceBuilderButton = document.querySelector('#sentenceBuilderButton')
 const randomSentenceButton = document.querySelector('#randomSentenceButton')
+const sentenceBuilderButton = document.querySelector('#sentenceBuilderButton')
+sentenceBuilderButton.classList.add('activeButton')
+
 const materialAndPatternsButton = document.querySelector('#materialAndPatternsButton')
-const recommendationSentence = document.querySelector('#recommendationSentence')
 const artStyleComboButton = document.querySelector('#artStyleComboButton')
-const adjustmentListContainer = document.querySelector('#adjustmentListContainer')
-artStyleComboButton.classList.add('activeButton')
+
 const fullSentenceShuffleButton = document.querySelector('.fullSentenceShuffle')
 
 fullSentenceShuffleButton.addEventListener('click', e => {
@@ -15,10 +15,10 @@ fullSentenceShuffleButton.addEventListener('click', e => {
     updateDisplaySentence()
 })
 
-sentenceBuilderButton.addEventListener('click', e => {
+artStyleComboButton.addEventListener('click', e => {
     const location = window.location
     removeActiveButtonClass(location)
-    window.location.href = 'animalHybrid.html'
+    window.location.href = 'artStyleCombos.html'
 })
 materialAndPatternsButton.addEventListener('click', e => {
     const location = window.location
@@ -31,41 +31,37 @@ randomSentenceButton.addEventListener('click', e => {
     window.location.href = 'index.html'
 })
 
+
 let artStyleObject = {
-    subject: {
+    adjective1: {
         enabled: true,
         value: '',
         isLocked: false,
     },
-    designer1: {
+    animal1: {
         enabled: true,
         value: '',
         isLocked: false,
     },
-    artist1: {
+    animal2: {
         enabled: true,
         value: '',
         isLocked: false,
     },
-    artist2: {
-        enabled: true,
-        value: '',
-        isLocked: false,
-    },
-    musicVideo1: {
+    scene: {
         enabled: false,
         value: '',
         isLocked: false,
     },
-    movie1: {
-        enabled: true,
+    artistStyle1: {
+        enabled: false,
         value: '',
         isLocked: false,
     },
 }
 let sortedArtStyleObject
 function sortArr () {
-    const orderArray = ['subject', 'designer', 'artist', 'musicVideo', 'movie'];
+    const orderArray = ['adjective', 'animal', 'scene', 'artistStyle'];
     const sortKeys = (a, b) => {
         const baseA = a.replace(/\d+$/, '')
         const baseB = b.replace(/\d+$/, '')
@@ -117,14 +113,17 @@ function shuffleSelectedValues() {
     let styleCategoryIndex = 0
     let movieCatagoryIndex = 0
     let designerCatagoryIndex = 0
+    let randomCatArray
+    let randomVal
     for (let i = 0; i < enabledKeys.length; i++) {
         const key = enabledKeys[i];
+        const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "")
         const isLastStyleKey = (styleCategoryIndex === styleKeys.length - 1)
         const isLastDesignerKey = (designerCatagoryIndex === designerKeys.length - 1)
         const isLastMovieKey = (movieCatagoryIndex === movieKeys.length - 1)
         
-        if (key === 'subject' && sortedArtStyleObject[key].isLocked === false) {
-            sortedArtStyleObject[key].value = data.subject[Math.floor(Math.random() * data.subject.length)];
+        if (trimmedKey === 'adjective' && sortedArtStyleObject[key].isLocked === false) {
+            sortedArtStyleObject[key].value = data[trimmedKey][Math.floor(Math.random() * data[trimmedKey].length)];
         } else {
             if(sortedArtStyleObject[key].isLocked === true && (key.startsWith('artist') || key.startsWith('movie') || key.startsWith('musicVideo'))){
                 styleCategoryIndex++;
@@ -132,9 +131,22 @@ function shuffleSelectedValues() {
             } else if (sortedArtStyleObject[key].isLocked === true){
                 continue
             }
-            const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "")
-            const randomCatArray = data.artistStyle[trimmedKey]
-            let randomVal = randomCatArray[Math.floor(Math.random() * randomCatArray.length)]
+            if(trimmedKey === 'artistStyle'){
+                const categoryKeys = Object.keys(data[trimmedKey]);
+
+                const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+        
+                const randomValueArray = data[trimmedKey][randomCategory];
+                randomVal = randomValueArray[Math.floor(Math.random() * randomValueArray.length)];
+
+    // Use the key to get the array and then pick a random element from it
+    // randomVal = data['artistStyle'][randomKey][Math.floor(Math.random() * data['artistStyle'][randomKey].length)];
+            } else {
+                randomCatArray = data[trimmedKey]
+                randomVal = randomCatArray[Math.floor(Math.random() * randomCatArray.length)]          
+            }
+            console.log(randomVal)
+            console.log(key)
             if (key.startsWith('designer') && sortedArtStyleObject[key].isLocked === false) {
                 designerCatagoryIndex++
                 if(designerCatagoryIndex === 1 && isLastDesignerKey){
@@ -158,7 +170,8 @@ function shuffleSelectedValues() {
                         randomVal += ',';
                     }
                 }
-            } else if (randomVal.startsWith('in the style of') && (key.startsWith('artist') || key.startsWith('movie') || key.startsWith('musicVideo'))) {
+            } else if (randomVal.startsWith('in the style of') && (key.startsWith('artistStyle') 
+            || key.startsWith('movie') || key.startsWith('musicVideo'))) {
                 styleCategoryIndex++;
                 if(key.startsWith('artist') || key.startsWith('musicVideo')){
 
@@ -196,7 +209,7 @@ function shuffleSelectedValues() {
 
                 }
                 }
-                if(sortedArtStyleObject[key].isLocked === true) return
+            if(sortedArtStyleObject[key].isLocked === true) return
             sortedArtStyleObject[key].value = randomVal;
         }
     }
@@ -282,14 +295,27 @@ if(e.target.textContent === 'enable'){
     e.target.setAttribute('class', 'enableButton enableButtonPressed')
     sortedArtStyleObject[key].enabled = true
     const input = document.querySelector(`input#${key}AdjustmentInput`)
-    if(input.value === ''){
-        const length = data['artistStyle'][trimmedKey].length
-        const randomInx = Math.floor(Math.random() * length)
-        const randomVal = data['artistStyle'][trimmedKey][randomInx]
-        sortedArtStyleObject[key].value = randomVal
-        input.value = randomVal
-        console.log(sortedArtStyleObject)
-    }
+    // if(key.startsWith('artistStyle')){
+    //     const categoryKeys = Object.keys(data[trimmedKey]);
+
+    //     const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+
+    //     const randomValueArray = data[trimmedKey][randomCategory];
+    //     const randomVal = randomValueArray[Math.floor(Math.random() * randomValueArray.length)];
+    
+    //     sortedArtStyleObject[key].value = randomVal;
+    //     input.value = randomVal;
+    //     console.log(sortedArtStyleObject)
+ 
+    // }
+    // if(input.value === ''){
+    //     const length = data[trimmedKey].length
+    //     const randomInx = Math.floor(Math.random() * length)
+    //     const randomVal = data[trimmedKey][randomInx]
+    //     sortedArtStyleObject[key].value = randomVal
+    //     input.value = randomVal
+    //     console.log(sortedArtStyleObject)
+    // }
     shuffleSelectedValues()
     updateDisplaySentence()
     updateAdjustmentList()
@@ -441,7 +467,7 @@ if (key === 'subject'){
     })
 } else {
     const trimmedKey = key.replace(/[^a-zA-Z]+.*/, "");
-    Object.values(data['artistStyle'][trimmedKey]).forEach(e => {
+    Object.values(data[trimmedKey]).forEach(e => {
         const option = document.createElement('option');
         option.value = e;
         option.textContent = e;
@@ -456,3 +482,46 @@ shuffleSelectedValues()
 updateAdjustmentList()
 updateDisplaySentence()
 console.log(artStyleObject)
+
+// const addWordButton = document.querySelector('#addWordButton')
+// console.log(addWordButton)
+// addWordButton.addEventListener('click', async e => {
+//     const embedding = await getEmbeddingForWord("house");
+//     console.log(embedding)
+//     await saveEmbeddingToFile({word: "house", embedding: embedding});
+    
+// })
+
+// const API_ENDPOINT = "https://api.openai.com/v1/embeddings";
+// const API_KEY = "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";  // Replace with your API key
+
+// async function getEmbeddingForWord(word) {
+//     const response = await fetch(API_ENDPOINT, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Bearer ${API_KEY}`
+//         },
+//         body: JSON.stringify({
+//             model: "text-embedding-ada-002",  // Assuming you're using this model
+//             input: word
+//         })
+//     });
+
+//     const data = await response.json();
+//     return data.data[0].embedding;  // This will be the embedding vector for the word "house"
+// }
+
+// async function saveEmbeddingToFile(data) {
+//     const response = await fetch('/saveEmbedding', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(data)
+//     });
+
+//     if (!response.ok) {
+//         console.error("Failed to save embedding:", await response.text());
+//     }
+// }

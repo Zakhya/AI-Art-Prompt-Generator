@@ -20,7 +20,7 @@ let lockIconList = document.querySelectorAll('.fa-lock')
 sentenceBuilderButton.addEventListener('click', e => {
     const location = window.location
     removeActiveButtonClass(location)
-    window.location.href = 'sentenceBuilder.html'
+    window.location.href = 'animalHybrid.html'
 })
 materialAndPatternsButton.addEventListener('click', e => {
     const location = window.location
@@ -499,7 +499,7 @@ const setTopButtonActive = () => {
 
 const createUI = () => {
 Object.keys(data).forEach((key, i) => {
-    if(key === 'pattern' || key === 'material') return
+    if(key === 'pattern' || key === 'material' || key === 'animal') return
     const value = data[key]
     const topButtonList = topButtonContainer.querySelectorAll('.topRandomButton, .topRandomButtonDetails')
     // const dropdown = document.getElementById(`${key}`);
@@ -595,11 +595,8 @@ Object.keys(data).forEach((key, i) => {
             Object.keys(currentRecomendationObject[key]).forEach(subKey => {
                 if(subKey === 'enabled' || subKey === 'disabled' || subKey === 'value' 
                 || subKey === undefined || typeof subKey === 'boolean') return
-                    // let subKeyEnableButton = document.querySelector(`#${subKey}EnableButton`)
-                    // console.log(subKeyEnableButton)
-                    // subKeyEnableButton.textContent = 'enable'
-                    // subKeyEnableButton.classList.remove('enableButtonPressed')
                     currentRecomendationObject[key][subKey].value = ''
+                    currentRecomendationObject[key][subKey].enabled = false
             })
             currentRecomendationObject[key].value = e.target.value
             currentRecomendationObject[key].enabled = true
@@ -632,7 +629,7 @@ Object.keys(data).forEach((key, i) => {
     itemInput.setAttribute('class', `adjustmentInput`)
     itemInput.setAttribute('type', 'text')
     
-    itemInput.addEventListener('input', e => {
+    itemInput.addEventListener('input', e => { 
         if(e.target.value  === ''){
             currentRecomendationObject[key].value = ''
             dropdown.value = 'none'
