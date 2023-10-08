@@ -1,6 +1,12 @@
-import { data } from "./data.js"
-import { addPlusAndShuffletoDetailsButton, activateUnlockIcon, hideLockIcon, hideUnlockIcon, removeActiveButtonClass } from "./functions.js"
-let recomendationSentence = document.getElementById('recommendationSentence')
+import { data } from './data.js';
+import {
+    addPlusAndShuffletoDetailsButton,
+    activateUnlockIcon,
+    hideLockIcon,
+    hideUnlockIcon,
+    removeActiveButtonClass
+} from './functions.js';
+  let recomendationSentence = document.getElementById('recommendationSentence')
 let adjustmentListContainer = document.getElementById('adjustmentListContainer')
 let topButtonContainer = document.querySelector('.topButtonContainer')
 let iconPlusContainer = document.querySelector('.iconPlusContainer')
